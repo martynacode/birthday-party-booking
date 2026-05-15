@@ -9,7 +9,7 @@ function LandingPage({ onBook }) {
 
             <div className="hero">
                 <img src={mainImage} alt="Children sledging in the snow" className="hero-image" />
-                <h1>The Ultimate Birthday Party!</h1>
+                <h1>The Ultimate Birthday Party Experience! testtt!</h1>
                 <p>Real snow. Real sledging. Real fun.</p>
                 <button className="book-button" onClick={onBook}>Book a Party</button>
             </div>
