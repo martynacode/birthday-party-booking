@@ -5,8 +5,10 @@ import React, { useState } from 'react';
 import LandingPage from './components/LandingPage';
 import PartyDetailsForm from './components/PartyDetailsForm';
 import PackageSelector from './components/PackageSelector';
+import RoomSelector from './components/RoomSelector';
 
 import './App.css';
+
 
 function App() {
     // STATE: which step are we currently showing
@@ -27,6 +29,12 @@ function App() {
         setStep('room');
     }
 
+    // Called when RoomSelector finishes
+    function handleRoomContinue(roomChoice) {
+        setBookingData({ ...bookingData, ...roomChoice });
+        setStep('food');
+    }
+
     return (
         <div className="App">
             {step === 'landing' && (
@@ -42,8 +50,16 @@ function App() {
             )}
 
             {step === 'room' && (
+                <RoomSelector 
+                    onContinue={handleRoomContinue}
+                    numberOfChildren={bookingData.numberOfChildren}
+                    childName={bookingData.childName}
+                />
+            )}
+
+            {step === 'food' && (
                 <div style={{ padding: '40px', textAlign: 'center' }}>
-                    <h2>Room selector coming next!</h2>
+                    <h2>Food & allergy form coming next!</h2>
                     <p>Booking data so far:</p>
                     <pre>{JSON.stringify(bookingData, null, 2)}</pre>
                 </div>
