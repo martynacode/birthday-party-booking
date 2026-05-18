@@ -225,3 +225,199 @@ body {
   font-size: 0.9rem;
   font-weight: 500;
 }
+
+/* ===== FOOD SUMMARY CARD ===== */
+.food-summary {
+  background: linear-gradient(135deg, #f5f7ff 0%, #e8f8f4 100%);
+  border: 2px solid var(--turquoise);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.food-summary h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--deep-blue);
+}
+
+.food-summary p {
+  margin: 6px 0;
+  color: var(--deep-blue);
+  font-size: 1rem;
+}
+
+.food-summary strong {
+  color: var(--deep-blue);
+  font-weight: 600;
+}
+
+/* ===== FORM PAGE (shared layout for all form steps) ===== */
+
+.form-page {
+  background: linear-gradient(
+    135deg,
+    var(--deep-blue) 0%,
+    var(--sky-blue) 100%
+  );
+  min-height: 100vh;
+  padding: 30px 20px;
+}
+
+.form-container {
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: var(--white);
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+  color: var(--deep-blue);
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.form-container h3 {
+  color: var(--deep-blue);
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.form-subtitle {
+  color: var(--sky-blue);
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+/* ===== FOOD CARDS ===== */
+
+.food-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.food-card {
+  position: relative;
+  border: 2px solid var(--silver);
+  border-radius: 15px;
+  padding: 20px;
+  cursor: pointer;
+  background-color: var(--white);
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
+}
+
+.food-card,
+.food-card * {
+  cursor: pointer;
+}
+
+.food-card:hover {
+  border-color: var(--sky-blue);
+  transform: translateY(-2px);
+}
+
+.food-card-selected {
+  border-color: var(--deep-blue);
+  background-color: #f5f7ff;
+  box-shadow: 0 4px 12px rgba(43, 50, 172, 0.15);
+}
+
+.food-card-emoji {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.food-card-label {
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+  color: var(--deep-blue);
+}
+
+.food-card-description {
+  margin: 0 0 12px 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.food-card-allergens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.allergen-pill {
+  background-color: #fff7d6;
+  color: #8a6d00;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid #f5d76e;
+}
+
+.food-card-selected-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: var(--deep-blue);
+  color: var(--white);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* ===== ALLERGENS LIST ===== */
+
+.allergen-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.allergen-item {
+  border: 1px solid var(--silver);
+  border-radius: 10px;
+  padding: 12px 16px;
+  background-color: var(--white);
+}
+
+.allergen-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--deep-blue);
+}
+
+.allergen-row,
+.allergen-row * {
+  cursor: pointer;
+}
+
+.allergen-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--deep-blue);
+}
+
+.allergen-message {
+  margin: 10px 0 0 30px;
+  padding: 10px 14px;
+  background-color: #fff7d6;
+  border-left: 3px solid var(--gold);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #5a4a00;
+  line-height: 1.4;
+}
