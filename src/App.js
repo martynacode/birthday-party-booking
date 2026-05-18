@@ -1,71 +1,82 @@
 // Import React and the useState hook
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 // Import our components
-import LandingPage from './components/LandingPage';
-import PartyDetailsForm from './components/PartyDetailsForm';
-import PackageSelector from './components/PackageSelector';
-import RoomSelector from './components/RoomSelector';
+import LandingPage from "./components/LandingPage";
+import PartyDetailsForm from "./components/PartyDetailsForm";
+import PackageSelector from "./components/PackageSelector";
+import RoomSelector from "./components/RoomSelector";
+import FoodAndAllergyForm from "./components/FoodAndAllergyForm";
 
-import './App.css';
-
+import "./App.css";
 
 function App() {
-    // STATE: which step are we currently showing
-    const [step, setStep] = useState('landing');
+  // STATE: which step are we currently showing
+  const [step, setStep] = useState("landing");
 
-    // STATE: the booking data we collect as the user fills in forms
-    const [bookingData, setBookingData] = useState({});
+  // STATE: the booking data we collect as the user fills in forms
+  const [bookingData, setBookingData] = useState({});
 
-    // Called when PartyDetailsForm finishes
-    function handleDetailsContinue(partyDetails) {
-        setBookingData({ ...bookingData, ...partyDetails });
-        setStep('package');
-    }
+  // Called when PartyDetailsForm finishes
+  function handleDetailsContinue(partyDetails) {
+    setBookingData({ ...bookingData, ...partyDetails });
+    setStep("package");
+  }
 
-    // Called when PackageSelector finishes
-    function handlePackageContinue(packageChoice) {
-        setBookingData({ ...bookingData, ...packageChoice });
-        setStep('room');
-    }
+  // Called when PackageSelector finishes
+  function handlePackageContinue(packageChoice) {
+    setBookingData({ ...bookingData, ...packageChoice });
+    setStep("room");
+  }
 
-    // Called when RoomSelector finishes
-    function handleRoomContinue(roomChoice) {
-        setBookingData({ ...bookingData, ...roomChoice });
-        setStep('food');
-    }
+  // Called when RoomSelector finishes
+  function handleRoomContinue(roomChoice) {
+    setBookingData({ ...bookingData, ...roomChoice });
+    setStep("food");
+  }
 
-    return (
-        <div className="App">
-            {step === 'landing' && (
-                <LandingPage onBook={() => setStep('details')} />
-            )}
+  // Called when FoodAndAllergyForm finishes
+  function handleFoodContinue(foodData) {
+    setBookingData({ ...bookingData, ...foodData });
+    setStep("booking"); // future bookingdetails step
+  }
 
-            {step === 'details' && (
-                <PartyDetailsForm onContinue={handleDetailsContinue} />
-            )}
+  return (
+    <div className="App">
+      {step === "landing" && <LandingPage onBook={() => setStep("details")} />}
 
-            {step === 'package' && (
-                <PackageSelector onContinue={handlePackageContinue} />
-            )}
+      {step === "details" && (
+        <PartyDetailsForm onContinue={handleDetailsContinue} />
+      )}
 
-            {step === 'room' && (
-                <RoomSelector 
-                    onContinue={handleRoomContinue}
-                    numberOfChildren={bookingData.numberOfChildren}
-                    childName={bookingData.childName}
-                />
-            )}
+      {step === "package" && (
+        <PackageSelector onContinue={handlePackageContinue} />
+      )}
 
-            {step === 'food' && (
-                <div style={{ padding: '40px', textAlign: 'center' }}>
-                    <h2>Food & allergy form coming next!</h2>
-                    <p>Booking data so far:</p>
-                    <pre>{JSON.stringify(bookingData, null, 2)}</pre>
-                </div>
-            )}
+      {step === "room" && (
+        <RoomSelector
+          onContinue={handleRoomContinue}
+          numberOfChildren={bookingData.numberOfChildren}
+          childName={bookingData.childName}
+        />
+      )}
+
+      {step === "food" && (
+        <FoodAndAllergyForm
+          onContinue={handleFoodContinue}
+          packageChoice={bookingData.package}
+        />
+      )}
+
+      {step === "booking" && (
+        <div style={{ padding: "40px", textAlign: "center" }}>
+          <h2>Booking details coming next!</h2>
+          <p>Full data so far:</p>
+          <pre>{JSON.stringify(bookingData, null, 2)}</pre>
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
 export default App;
