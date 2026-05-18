@@ -1,7 +1,28 @@
-// Update the function declaration to receive packageChoice
+// Import React and the useState hook.
+// We will need useState three times - for chosen food, dessert,
+// and the array of ticked allergens.
+import React, { useState } from 'react';
+
+
+// ====Food andAllergyForm - STEP 4
+//
+// Captures food and dietary information for the party:
+// - What main the whole crew is having (single choice)
+// - Optional dessert choice (only shown to Platinum packages)
+// - Any allergens or dietary needs (multi-select with inline messages)
+
+// Sends an object up to App.js {food, dessert, allergens}
+//
+// Props:
+// - Chips and veg sticks are always served - mentioned in copy, not selectable
+// - Each allergen shows an inline message explaining what we can accommodate
+//
 function FoodAndAllergyForm({ onContinue, packageChoice }) {
 
     // === STATE ===
+    // Three pieces of state, one per section of the form
+    // Food and dessert are single-choice (start as null, hold a string id when picked).
+    // Allergens are multi-choice (start as empty array, get added/removed as ticked).
     const [selectedFood, setSelectedFood] = useState(null);
     const [selectedDessert, setSelectedDessert] = useState(null);
     const [selectedAllergens, setSelectedAllergens] = useState([]);
@@ -9,8 +30,13 @@ function FoodAndAllergyForm({ onContinue, packageChoice }) {
 
     // === DATA: the four main food options ===
     // Each option has the data needed to render one card:
-    // id (for state), label (display), emoji (visual), description (subtitle),
-    // and allergens (the pill badges shown on the card).
+    // id: used internally to track what's selected
+    // label: the display name on the card
+    // emoji: visual icon top-left of the card
+    // description: array of pill bages shown at the bottom of the card
+    //
+    // Storing this as an array means the JSX can loop with .map()
+    // and draw one card per option automatically.
     const foodOptions = [
         {
             id: 'pizza',
@@ -44,6 +70,9 @@ function FoodAndAllergyForm({ onContinue, packageChoice }) {
 
 
     // === DATA: dessert options (Platinum only) ===
+    // Same shape as foodOptions.
+    // This section will only be RENDERED if packageChoice is Platinum -
+    // the data exists either way, we just conditionally show it in the JSX.
     const dessertOptions = [
         {
             id: 'ice-cream',
@@ -63,9 +92,16 @@ function FoodAndAllergyForm({ onContinue, packageChoice }) {
 
 
     // === DATA: allergen options with inline messages ===
-    // Each allergen has an id, label (with emoji), and the message shown
-    // inline when the user ticks it. Messages explain what our venue can and
-    // can't accommodate, in legally careful language.
+    // Each allergen has:
+    // id: used internally to track what's ticked
+    // lebel: emoji-prefixed display test
+    // message: shown beside the checkbox when ticked, explainding
+    // what our venue can/can't do for this allergen
+    //
+    // Messages use legally careful language ("can't guarantee 100%"),
+    // "please call us to discuss") which protects the venue while
+    // staying warm and informative.
+
     const allergenOptions = [
         {
             id: 'nuts',
@@ -104,4 +140,14 @@ function FoodAndAllergyForm({ onContinue, packageChoice }) {
         }
     ];
 
+
+    // === RETURN (JSX) ===
+    // To be built in the next session. 
+    // Will render: heading, food cards (loop), dessert section (conditional),
+    // allergen checklist with inline messages, summary card, Back/Continue buttons.
+    return null;
+
 }
+
+// Export so App.js can import this component
+export default FoodAndAllergenForm;
