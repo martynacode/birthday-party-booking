@@ -1,70 +1,98 @@
-# Getting Started with Create React App
+# Children's Party Booking Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based booking system for children's party venues, built as my final-year project for the Open University's BSc (Honours) Computing and IT.
 
-## Available Scripts
+The project explores how warm, trust-led UX design can simplify a genuinely complicated booking journey — drawing on my industry experience as a party host at a snow-sports venue.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## About this project
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This is **TM470: The Computing and IT Project** — my final-year capstone for the Open University. It's a working React MVP that walks parents through booking a children's birthday party, with the architecture in place to support a separate staff-facing dashboard.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The project is deliberately **generic and venue-agnostic**. It's inspired by industry experience, but room names, package details, mascot branding, and pricing are all fictional — not tied to any real venue.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Status
 
-### `npm run build`
+🚧 **Active development** — TMA03 due July 2026, EMA due September 2026.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**What's working:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Landing page
+- Party details form (with validation, error handling, and accessibility considerations)
+- Package selector (Gold vs Platinum tiers with tier-aware downstream behaviour)
+- Room selector (capacity-aware filtering with disabled states for too-small rooms)
+- Food & allergy form (tier-aware allergen messaging, back-navigation with state persistence)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**What's planned (skeleton stubs in place):**
 
-### `npm run eject`
+- Booking details (parent contact info collection)
+- Booking confirmation (summary + reference number)
+- Host view (staff-facing dashboard, separate from parent flow)
+- Brand identity through Bjorn, a hand-illustrated mascot
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+See the header comments in `BookingDetails.js`, `BookingConfirmation.js`, and `HostView.js` for the planned architecture of each.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Tech stack
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **React** (functional components, hooks)
+- **JavaScript** (ES6+)
+- **HTML5 + CSS3** (responsive design, CSS variables)
+- **Create React App** (Webpack + Babel via CRA defaults)
+- **Prettier** for code formatting
+- **Git + GitHub** for version control
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Architectural choices
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+A few decisions worth flagging:
 
-### Code Splitting
+**Single source of truth.** All booking data lives in `App.js` as `bookingData`. Each form is a presentational component that collects its own data and passes it up via `onContinue`. This keeps the data flow predictable and makes back-navigation trivial.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**Tier-aware behaviour.** The package tier picked in `PackageSelector` cascades through the rest of the flow. Platinum unlocks the dessert section in `FoodAndAllergyForm` and adds dessert-related messaging to allergen warnings. This was modelled at the data level (with `platinumExtra` fields) rather than scattered through the JSX with if-statements.
 
-### Analyzing the Bundle Size
+**Back-navigation with state persistence.** Implemented in `FoodAndAllergyForm` as the iteration pattern: forms initialise their state from a `previousData` prop, so navigating back and forth preserves the user's choices. Extending this pattern across the other forms is the next planned iteration.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Separation of parent and host flows.** The codebase models two distinct user journeys: parents booking parties, and staff viewing bookings. They share the same underlying data shape but never navigate between each other.
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Running locally
 
-### Advanced Configuration
+Clone the repository:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+\`\`\`bash
+git clone https://github.com/martynacode/birthday-party-booking.git
+cd birthday-party-booking
+\`\`\`
 
-### Deployment
+Or open it directly in **GitHub Desktop** via _File → Clone Repository_.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Then install and run:
 
-### `npm run build` fails to minify
+\`\`\`bash
+npm install
+npm start
+\`\`\`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The app will open at `http://localhost:3000`.
+
+---
+
+## About me
+
+I'm Martyna — a final-year Computing & IT student at the Open University, moving from hospitality into frontend and UX. This project draws on my work as a party host, where I've watched parents wrestle with overcomplicated booking systems and wondered if it could be done with more care.
+
+- 🔗 [LinkedIn](https://www.linkedin.com/in/martynamanikowska)
+- 📧 mmm.manikowska@outlook.com
+
+---
+
+## A note on the project name
+
+This is an academic project. Any resemblance to specific commercial booking platforms or party venues is intentional only in spirit — drawing on industry patterns I've observed — not in fact. All venue names, prices, room layouts, and branding are fictional.
