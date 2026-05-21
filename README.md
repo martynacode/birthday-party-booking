@@ -89,7 +89,6 @@ The app will open at `http://localhost:3000`.
 I'm Martyna — a final-year Computing & IT student at the Open University, moving from hospitality into frontend and UX. This project draws on my work as a party host, where I've watched parents wrestle with overcomplicated booking systems and wondered if it could be done with more care.
 
 - 🔗 [LinkedIn](https://www.linkedin.com/in/martynamanikowska)
-- 📧 mmm.manikowska@outlook.com
 
 ---
 
