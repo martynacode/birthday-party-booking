@@ -17,7 +17,7 @@ import "./App.css";
 //   - The "bookingData" state: all the data collected so far
 //   - Navigation handlers: how to move between steps
 //
-// Each form component is "dumb" — it only knows how to collect its
+// Each form component only knows how to collect its
 // own data and pass it up via onContinue. App stores the data and
 // decides what to render next.
 //

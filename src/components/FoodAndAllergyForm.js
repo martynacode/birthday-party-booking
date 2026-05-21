@@ -1,5 +1,5 @@
 // Import React and the useState hook.
-// We will need useState three times — for chosen food, dessert,
+// We will need useState twice — for chosen food
 // and the array of ticked allergens.
 import React, { useState } from "react";
 
@@ -7,43 +7,41 @@ import React, { useState } from "react";
 //
 // Captures food and dietary information for the party:
 //   - What main the whole crew is having (single choice)
-//   - Optional dessert choice (only shown to Platinum packages)
 //   - Any allergens or dietary needs (multi-select with inline messages)
 //
-// Sends an object up to App.js: { food, dessert, allergens }
+// Platinum customers also see a dedicated hot chocolate station
+// section describing what's offered and the alternatives available.
+//
+// Sends an object up to App.js: { food, allergens }
 //
 // Props:
 //   - onContinue: called with the data when the user clicks Continue
-//   - packageChoice: the package picked earlier (used to show/hide dessert section
-//                    and to tailor allergen messages by tier)
+//   - onBack: returns the user to the previous step (Room)
+//   - packageChoice: the package picked earlier (used to show/hide
+//                    the hot chocolate section and to tailor allergen
+//                    messages by tier)
+//   - previousData: any data already entered (for back-navigation)
 //
 // Notes:
 //   - Chips and veg sticks are always served — mentioned in copy, not selectable
-//   - Each allergen shows an inline message explaining what we can accommodate
-//   - Allergens with dessert implications carry an optional platinumExtra field
-//     that only renders for Platinum customers
+//   - All toppings are dairy-free and meat-free by default; vegan and
+//     allergy-aware alternatives are flagged through the allergen section
 //
 function FoodAndAllergyForm({
   onContinue,
-  packageChoice,
   onBack,
+  packageChoice,
   previousData,
 }) {
   // === STATE ===
-  // Three pieces of state, one per section of the form.
-  // Food and dessert are single-choice (start as null, hold a string id when picked).
-  // Allergens are multi-choice (start as empty array, get added/removed as ticked).
-
   // State is initialised from previousData if the user is returning
   // to this step (e.g. after clicking Back from Step 5). Otherwise
   // it starts empty.
   const [selectedFood, setSelectedFood] = useState(previousData?.food || null);
-  const [selectedDessert, setSelectedDessert] = useState(
-    previousData?.dessert || null,
-  );
   const [selectedAllergens, setSelectedAllergens] = useState(
     previousData?.allergens || [],
   );
+
   // === HANDLERS ===
   // toggleAllergen: toggles a single allergen id in/out of selectedAllergens
   //   - if it's already in the array → remove it (untick)
@@ -91,33 +89,13 @@ function FoodAndAllergyForm({
     },
   ];
 
-  // === DATA: dessert options (Platinum only) ===
-  const dessertOptions = [
-    {
-      id: "ice-cream",
-      label: "Ice Cream",
-      emoji: "🍦",
-      description:
-        "Individual sealed pots, multiple flavours on the day. Vegan alternatives available — please flag any vegan guests under allergies.",
-      allergens: ["🥛 Dairy / Milk", "⚠️ May contain traces of nuts or gluten"],
-    },
-    {
-      id: "fruit-skewers",
-      label: "Fruit Skewer",
-      emoji: "🍓",
-      description:
-        "Strawberry, melon and pineapple. Occasionally swapped for whatever's freshest on the day. A great choice for most diets — please still flag any allergies below so we can prep safely.",
-      allergens: ["✅ No major allergens"],
-    },
-  ];
-
   // === DATA: allergen options with inline messages ===
   // Each allergen has:
   //   - id: used internally to track what's ticked
   //   - label: emoji-prefixed display text
   //   - message: always shown when ticked — describes what is true about the food
-  //   - platinumExtra (optional): only shown for Platinum customers — describes
-  //     additional dessert-related info that doesn't apply to Gold
+  //   - platinumExtra (optional): only shown for Platinum customers —
+  //     describes additional info relevant to the hot chocolate station
   const allergenOptions = [
     {
       id: "nuts",
@@ -137,7 +115,7 @@ function FoodAndAllergyForm({
       message:
         "Pizza and pasta contain dairy. We can offer dairy-free alternatives such as goujons or hot dogs as a main.",
       platinumExtra:
-        "Ice cream also contains dairy — we can offer vegan vanilla ice cream as an alternative, or swap to fruit skewers.",
+        "Our hot chocolate is made with milk by default, but we can swap to dairy-free milk on request. Toppings are already dairy-free.",
     },
     {
       id: "eggs",
@@ -151,7 +129,7 @@ function FoodAndAllergyForm({
       message:
         "Cheese pizza and tomato pasta are both vegetarian-friendly mains.",
       platinumExtra:
-        "Both ice cream and fruit skewers are vegetarian-friendly for dessert.",
+        "The hot chocolate station and all toppings are vegetarian-friendly.",
     },
     {
       id: "vegan",
@@ -159,7 +137,7 @@ function FoodAndAllergyForm({
       message:
         "We can offer vegan pasta (without cheese) as a main. Please mention specific guests to your host on the day.",
       platinumExtra:
-        "For dessert, fruit skewers are naturally vegan, and we can offer vegan vanilla ice cream as an alternative.",
+        "The hot chocolate can be made vegan with dairy-free milk, and we can swap in vegan marshmallows. All other toppings are already vegan-friendly.",
     },
     {
       id: "other",
@@ -212,40 +190,29 @@ function FoodAndAllergyForm({
           ))}
         </div>
 
-        {/* === Section: Pick a dessert (Platinum only) === */}
+        {/* === Section: Hot Chocolate Station (Platinum only) === */}
         {packageChoice?.id === "platinum" && (
-          <>
-            <h3>🍰 Pick a dessert for the crew</h3>
-            <p className="form-subtitle">
-              Platinum includes a sweet treat — pick one for the group.
+          <div className="hot-chocolate-section">
+            <h3>🍫 Hot chocolate station</h3>
+            <p>
+              Your party comes with a build-your-own hot chocolate station! Each
+              child gets to make their own with our selection of toppings:
             </p>
-
-            <div className="food-grid">
-              {dessertOptions.map((dessert) => (
-                <div
-                  key={dessert.id}
-                  className={`food-card ${selectedDessert === dessert.id ? "food-card-selected" : ""}`}
-                  onClick={() => setSelectedDessert(dessert.id)}
-                >
-                  <div className="food-card-emoji">{dessert.emoji}</div>
-                  <h4 className="food-card-label">{dessert.label}</h4>
-                  <p className="food-card-description">{dessert.description}</p>
-
-                  <div className="food-card-allergens">
-                    {dessert.allergens.map((allergen, index) => (
-                      <span key={index} className="allergen-pill">
-                        {allergen}
-                      </span>
-                    ))}
-                  </div>
-
-                  {selectedDessert === dessert.id && (
-                    <span className="food-card-selected-badge">✓ Selected</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </>
+            <ul className="hot-chocolate-toppings">
+              <li>🍫 Hot chocolate (made with milk by default)</li>
+              <li>☁️ Whipped cream</li>
+              <li>🌈 Sprinkles</li>
+              <li>🍫 Chocolate sauce</li>
+              <li>🍓 Strawberry sauce</li>
+              <li>🍡 Marshmallows</li>
+            </ul>
+            <p className="hot-chocolate-note">
+              All our toppings are dairy-free and meat-free. We can also offer
+              dairy-free milk alternatives and vegan toppings (including vegan
+              marshmallows) — just flag any dietary needs in the allergies
+              section below.
+            </p>
+          </div>
         )}
 
         {/* === Section: Allergens === */}
@@ -279,7 +246,7 @@ function FoodAndAllergyForm({
                   {packageChoice?.id === "platinum" &&
                     allergen.platinumExtra && (
                       <p className="allergen-message">
-                        🍰 {allergen.platinumExtra}
+                        🍫 {allergen.platinumExtra}
                       </p>
                     )}
                 </>
@@ -292,27 +259,15 @@ function FoodAndAllergyForm({
         <div className="food-summary">
           <h3>Your food summary</h3>
 
-          {/* Main food*/}
+          {/* Main food */}
           <p>
-            <strong>Crew food:</strong>
+            <strong>Crew food:</strong>{" "}
             {selectedFood
               ? `${foodOptions.find((f) => f.id === selectedFood).emoji} ${
                   foodOptions.find((f) => f.id === selectedFood).label
                 }`
               : "Not chosen yet"}
           </p>
-
-          {/* Dessert (only for Platinum) */}
-          {packageChoice?.id === "platinum" && (
-            <p>
-              <strong>Dessert: </strong>
-              {selectedDessert
-                ? `${dessertOptions.find((d) => d.id === selectedDessert).emoji} ${
-                    dessertOptions.find((d) => d.id === selectedDessert).label
-                  }`
-                : "Not chosen yet"}
-            </p>
-          )}
 
           {/* Allergens */}
           <p>
@@ -324,19 +279,21 @@ function FoodAndAllergyForm({
                   .join(", ")}
           </p>
         </div>
+
         {/* === Navigation buttons === */}
         <div className="form-buttons">
           {/* Back button: returns to previous step without saving.
-          We deliberately do not autosave in progress data here - clicking Back implies the user wants to revisit earlier
-          choices, not commit current ones */}
+              We deliberately do not autosave in-progress data here —
+              clicking Back implies the user wants to revisit earlier
+              choices, not commit current ones. */}
           <button type="button" className="button-secondary" onClick={onBack}>
             ← Back
           </button>
 
-          {/* Continue button: sends the food/dessert/allergens data
-          up to App.js and moves to the next step.
-          Disabled until the user has picked a main food.
-          Dessert and allergens are optional */}
+          {/* Continue button: sends the food/allergens data
+              up to App.js and moves to the next step.
+              Disabled until the user has picked a main food.
+              Allergens are optional. */}
           <button
             type="button"
             className="button-primary"
@@ -344,7 +301,6 @@ function FoodAndAllergyForm({
             onClick={() =>
               onContinue({
                 food: selectedFood,
-                dessert: selectedDessert,
                 allergens: selectedAllergens,
               })
             }

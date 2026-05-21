@@ -221,8 +221,8 @@ function PartyDetailsForm({ onContinue }) {
             value={sessionTime}
             onChange={(e) => setSessionTime(e.target.value)}
           >
-            <option value="10:00">10:00 AM</option>
-            <option value="16:00">4:00 PM</option>
+            <option value="12:00">12:00 PM</option>
+            <option value="17:00">5:00 PM</option>
           </select>
         </div>
 

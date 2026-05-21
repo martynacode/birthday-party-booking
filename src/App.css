@@ -489,3 +489,54 @@ body {
   color: #5a4a00;
   line-height: 1.4;
 }
+
+/* ===== HOT CHOCOLATE SECTION (Platinum only) ===== */
+
+.hot-chocolate-section {
+  background: linear-gradient(135deg, #fff5e0 0%, #ffe8b8 100%);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.hot-chocolate-section h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--deep-blue);
+}
+
+.hot-chocolate-section p {
+  margin: 8px 0;
+  color: var(--deep-blue);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.hot-chocolate-toppings {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hot-chocolate-toppings li {
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.hot-chocolate-note {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #5a4a00;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 12px !important;
+}

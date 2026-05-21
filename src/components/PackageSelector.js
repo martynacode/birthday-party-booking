@@ -5,11 +5,13 @@ import React, { useState } from "react";
 // ===== PackageSelector — Step 2 of the booking flow =====
 //
 // Lets the user pick between two tiers: Gold (essentials) or
-// Platinum (everything in Gold plus dessert, extra host, party
-// bags, host-led games, and a premium voucher).
+// Platinum (everything in Gold plus extended room time, a hot
+// chocolate station, extra host, party bags, host-led games,
+// and a premium voucher).
 //
 // The tier picked here drives downstream behaviour — Platinum
-// unlocks the dessert section in FoodAndAllergyForm.
+// unlocks the hot chocolate experience, which is mentioned in
+// FoodAndAllergyForm's allergen messages for dairy-sensitive guests.
 //
 // Sends an object up to App.js: { package: <full package object> }
 //
@@ -31,10 +33,11 @@ function PackageSelector({ onContinue }) {
       price: 25,
       colourClass: "package-gold",
       features: [
-        "⛷️ Sledging session (30 minutes)",
+        "⛷️ Sledging session (45 minutes)",
         "🏠 Private party room (3 hours)",
         "🍕 Hot food included",
-        "☕ Unlimited tea, coffee and squash",
+        "🧃 Unlimited juice and water for the crew",
+        "☕ Unlimited tea and coffee for parents",
         "👑 Birthday throne — a special sledge for the birthday star",
         "📸 Group photo at the end",
         "🎁 Gift for the birthday child",
@@ -49,10 +52,11 @@ function PackageSelector({ onContinue }) {
       colourClass: "package-platinum",
       features: [
         "Everything in Gold, plus:",
+        "🏠 Extended party room (4 hours instead of 3)",
         "👤 Extra host on the slope to keep the party flowing",
         "🎮 Host-led party games with rewards for the winners",
         "🛍️ Party bag for every guest to take home",
-        "🍦 Ice cream and fruit skewers for the crew",
+        "🍫 Hot chocolate station with whipped cream and marshmallows",
         "🎫 Premium voucher: a private sledging lesson",
       ],
     },
