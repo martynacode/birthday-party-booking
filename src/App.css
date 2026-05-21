@@ -1,6 +1,5 @@
 /* Colour palette
-If we want to change a colour later, we change it in one place
-*/
+   If we want to change a colour later, we change it in one place. */
 :root {
   --deep-blue: #2b32ac;
   --sky-blue: #476ce8;
@@ -10,7 +9,7 @@ If we want to change a colour later, we change it in one place
   --gold: #ffd700;
 }
 
-/* Whole page body style */
+/* ===== WHOLE PAGE BODY ===== */
 body {
   margin: 0;
   font-family:
@@ -23,7 +22,7 @@ body {
   min-height: 100vh;
 }
 
-/* LANDING PAGE */
+/* ===== LANDING PAGE ===== */
 
 .landing-page {
   width: 100%;
@@ -57,7 +56,7 @@ body {
 }
 
 .hero p {
-  font-size: 1.5 rem;
+  font-size: 1.5rem;
   margin: 0 0 40px 0;
   opacity: 0.95;
 }
@@ -65,7 +64,7 @@ body {
 .book-button {
   background-color: var(--gold);
   color: var(--deep-blue);
-  font-size: 1.3 rem;
+  font-size: 1.3rem;
   font-weight: bold;
   padding: 15px 40px;
   border: none;
@@ -106,7 +105,7 @@ body {
   }
 
   .hero p {
-    font-size: 1.1 rem;
+    font-size: 1.1rem;
   }
 
   .features h2 {
@@ -118,7 +117,7 @@ body {
   }
 }
 
-/* PACKAGE SELECTOR */
+/* ===== PACKAGE SELECTOR ===== */
 
 .package-grid {
   display: grid;
@@ -194,6 +193,26 @@ body {
   color: var(--deep-blue);
 }
 
+/* ===== CONTINUE BUTTON (shared across single-button forms) ===== */
+
+.continue-button {
+  background-color: var(--deep-blue);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: block;
+  margin: 30px auto 0 auto;
+}
+
+.continue-button:hover:not(:disabled) {
+  transform: scale(1.03);
+}
+
 .continue-button:disabled {
   background-color: var(--silver);
   color: white;
@@ -201,7 +220,55 @@ body {
   opacity: 0.6;
 }
 
-/* ROOM CARDS */
+/* ===== FORM BUTTONS (Back + Continue side-by-side) ===== */
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.button-primary,
+.button-secondary {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.button-primary {
+  background-color: var(--deep-blue);
+  color: white;
+  border: none;
+}
+
+.button-primary:hover:not(:disabled) {
+  transform: scale(1.03);
+}
+
+.button-primary:disabled {
+  background-color: var(--silver);
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.button-secondary {
+  background-color: transparent;
+  color: var(--deep-blue);
+  border: 2px solid var(--deep-blue);
+}
+
+.button-secondary:hover {
+  background-color: var(--deep-blue);
+  color: white;
+}
+
+/* ===== ROOM CARDS ===== */
+
 .room-card {
   cursor: pointer;
 }
@@ -227,6 +294,7 @@ body {
 }
 
 /* ===== FOOD SUMMARY CARD ===== */
+
 .food-summary {
   background: linear-gradient(135deg, #f5f7ff 0%, #e8f8f4 100%);
   border: 2px solid var(--turquoise);

@@ -23,15 +23,27 @@ import React, { useState } from "react";
 //   - Allergens with dessert implications carry an optional platinumExtra field
 //     that only renders for Platinum customers
 //
-function FoodAndAllergyForm({ onContinue, packageChoice }) {
+function FoodAndAllergyForm({
+  onContinue,
+  packageChoice,
+  onBack,
+  previousData,
+}) {
   // === STATE ===
   // Three pieces of state, one per section of the form.
   // Food and dessert are single-choice (start as null, hold a string id when picked).
   // Allergens are multi-choice (start as empty array, get added/removed as ticked).
-  const [selectedFood, setSelectedFood] = useState(null);
-  const [selectedDessert, setSelectedDessert] = useState(null);
-  const [selectedAllergens, setSelectedAllergens] = useState([]);
 
+  // State is initialised from previousData if the user is returning
+  // to this step (e.g. after clicking Back from Step 5). Otherwise
+  // it starts empty.
+  const [selectedFood, setSelectedFood] = useState(previousData?.food || null);
+  const [selectedDessert, setSelectedDessert] = useState(
+    previousData?.dessert || null,
+  );
+  const [selectedAllergens, setSelectedAllergens] = useState(
+    previousData?.allergens || [],
+  );
   // === HANDLERS ===
   // toggleAllergen: toggles a single allergen id in/out of selectedAllergens
   //   - if it's already in the array → remove it (untick)
@@ -201,7 +213,7 @@ function FoodAndAllergyForm({ onContinue, packageChoice }) {
         </div>
 
         {/* === Section: Pick a dessert (Platinum only) === */}
-        {packageChoice.id === "platinum" && (
+        {packageChoice?.id === "platinum" && (
           <>
             <h3>🍰 Pick a dessert for the crew</h3>
             <p className="form-subtitle">
@@ -264,7 +276,7 @@ function FoodAndAllergyForm({ onContinue, packageChoice }) {
                 <>
                   <p className="allergen-message">📝 {allergen.message}</p>
 
-                  {packageChoice.id === "platinum" &&
+                  {packageChoice?.id === "platinum" &&
                     allergen.platinumExtra && (
                       <p className="allergen-message">
                         🍰 {allergen.platinumExtra}
@@ -291,7 +303,7 @@ function FoodAndAllergyForm({ onContinue, packageChoice }) {
           </p>
 
           {/* Dessert (only for Platinum) */}
-          {packageChoice.id === "platinum" && (
+          {packageChoice?.id === "platinum" && (
             <p>
               <strong>Dessert: </strong>
               {selectedDessert
@@ -306,11 +318,39 @@ function FoodAndAllergyForm({ onContinue, packageChoice }) {
           <p>
             <strong>Allergies: </strong>
             {selectedAllergens.length === 0
-              ? "None delcared ✅"
+              ? "None declared ✅"
               : selectedAllergens
                   .map((id) => allergenOptions.find((a) => a.id === id).label)
                   .join(", ")}
           </p>
+        </div>
+        {/* === Navigation buttons === */}
+        <div className="form-buttons">
+          {/* Back button: returns to previous step without saving.
+          We deliberately do not autosave in progress data here - clicking Back implies the user wants to revisit earlier
+          choices, not commit current ones */}
+          <button type="button" className="button-secondary" onClick={onBack}>
+            ← Back
+          </button>
+
+          {/* Continue button: sends the food/dessert/allergens data
+          up to App.js and moves to the next step.
+          Disabled until the user has picked a main food.
+          Dessert and allergens are optional */}
+          <button
+            type="button"
+            className="button-primary"
+            disabled={!selectedFood}
+            onClick={() =>
+              onContinue({
+                food: selectedFood,
+                dessert: selectedDessert,
+                allergens: selectedAllergens,
+              })
+            }
+          >
+            Continue →
+          </button>
         </div>
       </div>
     </div>

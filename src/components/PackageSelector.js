@@ -1,44 +1,57 @@
-// Import React and useState
+// Import React and the useState hook from the react library.
+// useState lets us "remember" which package the user has picked.
 import React, { useState } from "react";
 
-// PackageSelector receives onContinue from App.js
-// onContinue is a function — we call it with the chosen package when ready
+// ===== PackageSelector — Step 2 of the booking flow =====
+//
+// Lets the user pick between two tiers: Gold (essentials) or
+// Platinum (everything in Gold plus dessert, extra host, party
+// bags, host-led games, and a premium voucher).
+//
+// The tier picked here drives downstream behaviour — Platinum
+// unlocks the dessert section in FoodAndAllergyForm.
+//
+// Sends an object up to App.js: { package: <full package object> }
+//
+// Props:
+//   - onContinue: called with the package data when Continue is clicked
+//
 function PackageSelector({ onContinue }) {
   // === STATE: which package has the user picked? ===
-  // Starts as null = nothing selected yet
+  // Starts as null because nothing is selected yet.
   const [selectedPackage, setSelectedPackage] = useState(null);
 
-  // === DATA: package details ===
-  // Defined as an array of objects so we can loop over it cleanly
+  // === DATA: the two packages on offer ===
+  // Stored as an array of objects so we can loop over them and
+  // let React render one card per package automatically.
   const packages = [
     {
       id: "gold",
       name: "Gold",
-      price: 19.99,
+      price: 25,
       colourClass: "package-gold",
       features: [
-        "⛷️Sledging session (30 minutes)",
-        "🏠Private party room (3 hours)",
-        "🍕Hot food included",
-        "☕Unlimited tea, coffee and squash",
+        "⛷️ Sledging session (30 minutes)",
+        "🏠 Private party room (3 hours)",
+        "🍕 Hot food included",
+        "☕ Unlimited tea, coffee and squash",
         "👑 Birthday throne — a special sledge for the birthday star",
         "📸 Group photo at the end",
         "🎁 Gift for the birthday child",
-        "🎫Voucher: sledging for a family of 4",
-        "🎵Music in the party room",
+        "🎫 Voucher: sledging for a family of 4",
+        "🎵 Music in the party room",
       ],
     },
-
     {
       id: "platinum",
       name: "Platinum",
-      price: 29.99,
+      price: 40,
       colourClass: "package-platinum",
       features: [
         "Everything in Gold, plus:",
         "👤 Extra host on the slope to keep the party flowing",
         "🎮 Host-led party games with rewards for the winners",
-        "🛍️  Party bag for every guest to take home",
+        "🛍️ Party bag for every guest to take home",
         "🍦 Ice cream and fruit skewers for the crew",
         "🎫 Premium voucher: a private sledging lesson",
       ],
@@ -46,13 +59,15 @@ function PackageSelector({ onContinue }) {
   ];
 
   // === HANDLE CONTINUE ===
-  // Find the full package object from the selected id, pass it up to App.js
+  // Runs when the user clicks the Continue button.
+  // 1. Find the full package object using the selected id
+  // 2. Pass it up to App.js through the onContinue prop
   function handleContinue() {
     const chosen = packages.find((p) => p.id === selectedPackage);
     onContinue({ package: chosen });
   }
 
-  // === What to display ===
+  // === WHAT TO DISPLAY ON THE SCREEN ===
   return (
     <div className="form-page">
       <div className="form-container">
@@ -60,7 +75,9 @@ function PackageSelector({ onContinue }) {
         <p className="form-subtitle">Pick the package that suits the party</p>
 
         <div className="package-grid">
-          {/* Loop over each package and render a card */}
+          {/* Loop over each package and render a card.
+              The card uses package.colourClass for tier-specific styling
+              (gold vs platinum colour treatment in CSS). */}
           {packages.map((pkg) => (
             <div
               key={pkg.id}
@@ -69,13 +86,22 @@ function PackageSelector({ onContinue }) {
               }`}
               onClick={() => setSelectedPackage(pkg.id)}
             >
+              {/* Package name as the heading */}
               <h3>{pkg.name}</h3>
+
+              {/* Price — toFixed(2) ensures consistent 2-decimal display
+                  even for whole-pound values (£25 → £25.00). */}
               <p className="package-price">£{pkg.price.toFixed(2)} per child</p>
+
+              {/* Feature list — one <li> per feature in the array */}
               <ul className="package-features">
                 {pkg.features.map((feature, index) => (
                   <li key={index}>{feature}</li>
                 ))}
               </ul>
+
+              {/* Selection hint — tells the user this card is tappable,
+                  and changes to "Selected" once they have picked it. */}
               <p className="package-select-hint">
                 {selectedPackage === pkg.id ? "✓ Selected" : "Tap to select"}
               </p>
@@ -83,7 +109,11 @@ function PackageSelector({ onContinue }) {
           ))}
         </div>
 
+        {/* Continue button — disabled until a package is selected.
+            type="button" prevents accidental form submission if this
+            component is ever placed inside a <form>. */}
         <button
+          type="button"
           className="continue-button"
           onClick={handleContinue}
           disabled={!selectedPackage}
@@ -95,4 +125,5 @@ function PackageSelector({ onContinue }) {
   );
 }
 
+// Export so App.js can import this component
 export default PackageSelector;

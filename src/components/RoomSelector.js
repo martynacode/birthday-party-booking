@@ -2,11 +2,19 @@
 // useState lets us "remember" things that can change (like which room is picked).
 import React, { useState } from "react";
 
-// RoomSelector is a component that lets the user pick a party room.
-// It receives three props from App.js:
-//   - onContinue: a function we call when the user clicks Continue
+// ===== RoomSelector — Step 3 of the booking flow =====
+//
+// Lets the user pick a party room based on group size.
+// Rooms that can't fit the group are visible but disabled —
+// the user can still see them, but can't select them.
+//
+// Sends an object up to App.js: { room: <full room object> }
+//
+// Props:
+//   - onContinue: called with the room data when Continue is clicked
 //   - numberOfChildren: the group size (used to filter which rooms fit)
 //   - childName: the birthday child's name (used in the heading)
+//
 function RoomSelector({ onContinue, numberOfChildren, childName }) {
   // === STATE: which room has the user picked? ===
   // Starts as null because nothing is selected yet.
@@ -26,7 +34,7 @@ function RoomSelector({ onContinue, numberOfChildren, childName }) {
       features: [
         "Holds up to 12 little legends",
         "Viewing area for parents",
-        "Our smallest room - feels cosy and warm",
+        "Our smallest room — feels cosy and warm",
       ],
     },
     {
@@ -44,11 +52,11 @@ function RoomSelector({ onContinue, numberOfChildren, childName }) {
       id: "blizzard",
       name: "Blizzard",
       capacity: 24,
-      tagline: "Big crew, Big room",
+      tagline: "Big crew, big room",
       features: [
         "Holds up to 24 little legends",
         "Air conditioning and heating",
-        "Our biggest room - no viewing area, but plenty of space",
+        "Our biggest room — no viewing area, but plenty of space",
       ],
     },
   ];
@@ -82,19 +90,21 @@ function RoomSelector({ onContinue, numberOfChildren, childName }) {
         </p>
 
         {/* The grid wrapper holds the three room cards.
-                    CSS will lay them out in three columns on desktop,
-                    or stack them on mobile. */}
+            CSS will lay them out in three columns on desktop,
+            or stack them on mobile. */}
         <div className="room-grid">
           {/* Loop through each room and render a card for it */}
           {rooms.map((room) => {
-            // Work out once, whether this room fits the crew size.
+            // Work out once whether this room fits the crew size.
             // Use 'fits' to control the className, the onClick, and the messaging below.
             const fits = canFit(room);
             return (
               // Each card needs a unique key — we use room.id (frost, glacier, blizzard).
               // The className is built using a template literal: it always has "room-card",
-              // and ADDS "room-card-selected" only if this is the currently selected one.
-              // onClick updates the sticky note (state) with the room's id when clicked.
+              // and adds "room-card-selected" only if this is the currently selected one,
+              // and "room-card-disabled" if the room can't fit the crew.
+              // onClick updates the state with the room's id when clicked — but only
+              // if the room fits, so disabled cards are not selectable.
               <div
                 key={room.id}
                 className={`room-card ${selectedRoom === room.id ? "room-card-selected" : ""} ${!fits ? "room-card-disabled" : ""}`}
@@ -107,25 +117,25 @@ function RoomSelector({ onContinue, numberOfChildren, childName }) {
                 <p className="room-tagline">{room.tagline}</p>
 
                 {/* Nested map: for each feature in this room's features array,
-                                render one <li> bullet point. We use index as the key because
-                                features are plain strings with no id. */}
+                    render one <li> bullet point. We use index as the key because
+                    features are plain strings with no id. */}
                 <ul className="room-features">
                   {room.features.map((feature, index) => (
                     <li key={index}>{feature}</li>
                   ))}
                 </ul>
 
-                {/* "Too small" message - only shows for rooms that don't fit the crew.
-                            Uses && : if !fits is false, nothing renders at all. */}
+                {/* "Too small" message — only shows for rooms that don't fit the crew.
+                    Uses && : if !fits is false, nothing renders at all. */}
                 {!fits && (
                   <p className="room-too-small">
-                    {room.name} fits up to {room.capacity} - your crew is a bit
+                    {room.name} fits up to {room.capacity} — your crew is a bit
                     bigger than that
                   </p>
                 )}
 
-                {/* Selection hint - tells the user this card is tappable, and changes to selected
-                            once they have picked it*/}
+                {/* Selection hint — tells the user this card is tappable,
+                    and changes to "Selected" once they have picked it. */}
                 <p className="room-select-hint">
                   {selectedRoom === room.id ? "Selected" : "Tap to select"}
                 </p>
@@ -134,8 +144,11 @@ function RoomSelector({ onContinue, numberOfChildren, childName }) {
           })}
         </div>
 
-        {/* Continue button - disabled until a room is selected*/}
+        {/* Continue button — disabled until a room is selected.
+            type="button" prevents accidental form submission if this
+            component is ever placed inside a <form>. */}
         <button
+          type="button"
           className="continue-button"
           onClick={handleContinue}
           disabled={!selectedRoom}
@@ -147,4 +160,5 @@ function RoomSelector({ onContinue, numberOfChildren, childName }) {
   );
 }
 
+// Export so App.js can import this component
 export default RoomSelector;
