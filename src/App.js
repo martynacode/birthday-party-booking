@@ -7,6 +7,7 @@ import PartyDetailsForm from "./components/PartyDetailsForm";
 import PackageSelector from "./components/PackageSelector";
 import RoomSelector from "./components/RoomSelector";
 import FoodAndAllergyForm from "./components/FoodAndAllergyForm";
+import BookingDetails from "./components/BookingDetails";
 
 import "./App.css";
 
@@ -31,6 +32,8 @@ function App() {
 
   // The booking data we collect as the user fills in forms
   const [bookingData, setBookingData] = useState({});
+
+  const [contactDetails, setContactDetails] = useState(null);
 
   // === HANDLERS ===
   // Each form has its own continue handler that merges new data into
@@ -103,15 +106,15 @@ function App() {
         />
       )}
 
-      {/* === Step 6: Booking Details (TODO) ===
-          Placeholder for now. Final step will collect parent contact
-          details, confirm the booking, and show a summary. */}
       {step === "booking" && (
-        <div style={{ padding: "40px", textAlign: "center" }}>
-          <h2>Booking details — coming soon</h2>
-          <p>Data collected so far:</p>
-          <pre>{JSON.stringify(bookingData, null, 2)}</pre>
-        </div>
+        <BookingDetails
+          formData={bookingData}
+          onBack={() => handleBack("food")}
+          onSubmit={(details) => {
+            setContactDetails(details);
+            setStep("confirmation");
+          }}
+        />
       )}
     </div>
   );
