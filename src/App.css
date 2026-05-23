@@ -692,3 +692,119 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ===== BOOKING CONFIRMATION ===== */
+
+.confirmation-hero {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #fff9e0 0%, #ffe8b8 100%);
+  border-radius: 15px;
+  margin-bottom: 30px;
+  border: 2px solid var(--gold);
+}
+
+.confirmation-hero h2 {
+  color: var(--deep-blue);
+  font-size: 2rem;
+  margin: 0 0 15px 0;
+}
+
+.confirmation-message {
+  font-size: 1.2rem;
+  color: var(--deep-blue);
+  margin: 0 0 20px 0;
+}
+
+.booking-ref {
+  display: inline-block;
+  background-color: var(--white);
+  padding: 12px 24px;
+  border-radius: 50px;
+  border: 2px solid var(--deep-blue);
+}
+
+.booking-ref-label {
+  color: var(--deep-blue);
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.booking-ref-number {
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  color: var(--deep-blue);
+  letter-spacing: 1px;
+}
+
+/* ===== GLOVES WARNING ===== */
+
+.gloves-warning {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+  border: 2px solid #f0ad4e;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.gloves-warning-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.gloves-warning-content {
+  flex: 1;
+}
+
+.gloves-warning-content h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #8a6d00;
+}
+
+.gloves-warning-content p {
+  margin: 0 0 10px 0;
+  color: #5a4a00;
+  line-height: 1.5;
+}
+
+.gloves-warning-content p:last-child {
+  margin-bottom: 0;
+}
+
+.bjorn-aside {
+  font-size: 0.95rem;
+  color: #7a5a00 !important;
+  padding: 10px 14px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  border-left: 3px solid #f0ad4e;
+}
+
+/* ===== NEXT STEPS ===== */
+
+.next-steps {
+  background: linear-gradient(135deg, #f5f7ff 0%, #e8f8f4 100%);
+  border: 2px solid var(--turquoise);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 30px;
+}
+
+.next-steps h3 {
+  margin-top: 0;
+  color: var(--deep-blue);
+}
+
+.next-steps ol {
+  padding-left: 20px;
+  color: var(--deep-blue);
+}
+
+.next-steps li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}

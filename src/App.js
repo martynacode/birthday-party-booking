@@ -1,5 +1,5 @@
 // Import React and the useState hook
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // Import our components
 import LandingPage from "./components/LandingPage";
@@ -8,6 +8,7 @@ import PackageSelector from "./components/PackageSelector";
 import RoomSelector from "./components/RoomSelector";
 import FoodAndAllergyForm from "./components/FoodAndAllergyForm";
 import BookingDetails from "./components/BookingDetails";
+import BookingConfirmation from "./components/BookingConfirmation";
 
 import "./App.css";
 
@@ -34,6 +35,11 @@ function App() {
   const [bookingData, setBookingData] = useState({});
 
   const [contactDetails, setContactDetails] = useState(null);
+
+  // Scroll to top whenever the step changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
 
   // === HANDLERS ===
   // Each form has its own continue handler that merges new data into
@@ -113,6 +119,19 @@ function App() {
           onSubmit={(details) => {
             setContactDetails(details);
             setStep("confirmation");
+          }}
+        />
+      )}
+
+      {step === "confirmation" && (
+        <BookingConfirmation
+          formData={bookingData}
+          contactDetails={contactDetails}
+          onNewBooking={() => {
+            // Reset all state and go back to landing
+            setBookingData({});
+            setContactDetails(null);
+            setStep("landing");
           }}
         />
       )}
