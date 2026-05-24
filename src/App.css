@@ -19,6 +19,7 @@ body {
 }
 
 .App {
+  display: flex;
   min-height: 100vh;
 }
 
@@ -807,4 +808,151 @@ body {
 .next-steps li {
   margin-bottom: 12px;
   line-height: 1.6;
+}
+
+/* ===== SIDEBAR ===== */
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 220px;
+  background: linear-gradient(
+    180deg,
+    var(--deep-blue) 0%,
+    var(--sky-blue) 100%
+  );
+  color: var(--white);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-logo {
+  font-size: 3rem;
+  margin: 0 0 10px 0;
+}
+
+.sidebar-brand {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.sidebar-button {
+  background-color: transparent;
+  color: var(--white);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.sidebar-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--white);
+}
+
+.sidebar-button-active {
+  background-color: var(--white);
+  color: var(--deep-blue);
+  border-color: var(--white);
+  font-weight: 600;
+}
+
+.sidebar-button-active:hover {
+  background-color: var(--white);
+  color: var(--deep-blue);
+}
+
+.sidebar-footer {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+/* ===== APP MAIN (content area next to sidebar) ===== */
+
+.App-main {
+  flex: 1;
+  margin-left: 220px; /* Match sidebar width */
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .App {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    padding: 15px;
+  }
+
+  .sidebar-header {
+    margin-bottom: 0;
+    margin-right: 20px;
+    padding-bottom: 0;
+    border-bottom: none;
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+    padding-right: 20px;
+  }
+
+  .sidebar-logo {
+    font-size: 2rem;
+  }
+
+  .sidebar-brand {
+    font-size: 0.9rem;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex: 1;
+  }
+
+  .sidebar-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .App-main {
+    margin-left: 0;
+  }
 }

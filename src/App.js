@@ -9,6 +9,7 @@ import RoomSelector from "./components/RoomSelector";
 import FoodAndAllergyForm from "./components/FoodAndAllergyForm";
 import BookingDetails from "./components/BookingDetails";
 import BookingConfirmation from "./components/BookingConfirmation";
+import Sidebar from "./components/Sidebar";
 
 import "./App.css";
 
@@ -35,6 +36,9 @@ function App() {
   const [bookingData, setBookingData] = useState({});
 
   const [contactDetails, setContactDetails] = useState(null);
+
+  // Which top-level view is active: "booking" (parent flow) or "host view" (staff dashboard)
+  const [view, setView] = useState("booking");
 
   // Scroll to top whenever the step changes
   useEffect(() => {
@@ -81,60 +85,78 @@ function App() {
   // === WHAT TO DISPLAY ON THE SCREEN ===
   return (
     <div className="App">
-      {step === "landing" && <LandingPage onBook={() => setStep("details")} />}
+      <Sidebar currentView={view} onViewChange={setView} />
 
-      {step === "details" && (
-        <PartyDetailsForm onContinue={handleDetailsContinue} />
-      )}
+      <main className="App-main">
+        {view === "booking" && (
+          <>
+            {step === "landing" && (
+              <LandingPage onBook={() => setStep("details")} />
+            )}
 
-      {step === "package" && (
-        <PackageSelector onContinue={handlePackageContinue} />
-      )}
+            {step === "details" && (
+              <PartyDetailsForm onContinue={handleDetailsContinue} />
+            )}
 
-      {step === "room" && (
-        <RoomSelector
-          onContinue={handleRoomContinue}
-          numberOfChildren={bookingData.numberOfChildren}
-          childName={bookingData.childName}
-        />
-      )}
+            {step === "package" && (
+              <PackageSelector onContinue={handlePackageContinue} />
+            )}
 
-      {step === "food" && (
-        <FoodAndAllergyForm
-          onContinue={handleFoodContinue}
-          onBack={() => handleBack("room")}
-          packageChoice={bookingData.package}
-          previousData={{
-            food: bookingData.food,
-            dessert: bookingData.dessert,
-            allergens: bookingData.allergens,
-          }}
-        />
-      )}
+            {step === "room" && (
+              <RoomSelector
+                onContinue={handleRoomContinue}
+                numberOfChildren={bookingData.numberOfChildren}
+                childName={bookingData.childName}
+              />
+            )}
 
-      {step === "booking" && (
-        <BookingDetails
-          formData={bookingData}
-          onBack={() => handleBack("food")}
-          onSubmit={(details) => {
-            setContactDetails(details);
-            setStep("confirmation");
-          }}
-        />
-      )}
+            {step === "food" && (
+              <FoodAndAllergyForm
+                onContinue={handleFoodContinue}
+                onBack={() => handleBack("room")}
+                packageChoice={bookingData.package}
+                previousData={{
+                  food: bookingData.food,
+                  dessert: bookingData.dessert,
+                  allergens: bookingData.allergens,
+                }}
+              />
+            )}
 
-      {step === "confirmation" && (
-        <BookingConfirmation
-          formData={bookingData}
-          contactDetails={contactDetails}
-          onNewBooking={() => {
-            // Reset all state and go back to landing
-            setBookingData({});
-            setContactDetails(null);
-            setStep("landing");
-          }}
-        />
-      )}
+            {step === "booking" && (
+              <BookingDetails
+                formData={bookingData}
+                onBack={() => handleBack("food")}
+                onSubmit={(details) => {
+                  setContactDetails(details);
+                  setStep("confirmation");
+                }}
+              />
+            )}
+
+            {step === "confirmation" && (
+              <BookingConfirmation
+                formData={bookingData}
+                contactDetails={contactDetails}
+                onNewBooking={() => {
+                  setBookingData({});
+                  setContactDetails(null);
+                  setStep("landing");
+                }}
+              />
+            )}
+          </>
+        )}
+
+        {view === "host" && (
+          <div className="form-page">
+            <div className="form-container">
+              <h2>👤 Host View</h2>
+              <p>Coming soon — this is where staff will see all bookings.</p>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
