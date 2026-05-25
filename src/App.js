@@ -10,6 +10,7 @@ import FoodAndAllergyForm from "./components/FoodAndAllergyForm";
 import BookingDetails from "./components/BookingDetails";
 import BookingConfirmation from "./components/BookingConfirmation";
 import Sidebar from "./components/Sidebar";
+import HostView from "./components/HostView";
 
 import "./App.css";
 
@@ -148,14 +149,7 @@ function App() {
           </>
         )}
 
-        {view === "host" && (
-          <div className="form-page">
-            <div className="form-container">
-              <h2>👤 Host View</h2>
-              <p>Coming soon — this is where staff will see all bookings.</p>
-            </div>
-          </div>
-        )}
+        {view === "host" && <HostView />}
       </main>
     </div>
   );

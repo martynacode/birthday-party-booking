@@ -1,10 +1,10 @@
-// Import React and the useState hook.
-// useState will track the selected date and filter state once this view is built.
-import React, { useState } from "react";
+// Import React and the hooks we need.
+// useState holds the bookings list and the currently selected booking.
+// useEffect runs once when the component mounts to load saved bookings.
+import React, { useState, useEffect } from "react";
+import { loadAllBookings } from "./bookingStorage";
 
-// ===== HostView — staff-facing booking dashboard (SKELETON) =====
-//
-// PLACEHOLDER — not yet implemented.
+// ===== HostView — staff-facing booking dashboard =====
 //
 // PURPOSE:
 // The host-facing view of the system. While parents use the booking
@@ -12,83 +12,101 @@ import React, { useState } from "react";
 // need a completely separate screen to see what bookings are coming
 // up so they can prep food, set up rooms, and brief the team.
 //
-// This is the start of a host portal — for the MVP it shows today's
-// bookings as a simple list, but the longer-term plan supports more.
+// Reads booking data from localStorage via the bookingStorage helper.
+// Decoupled from the parent flow — HostView doesn't know about the
+// booking forms, only the saved data.
 //
-// PLANNED DISPLAY (MVP):
-//   - Heading: "Today's parties" (or date picker for other days)
-//   - A card per booking, sorted by session time, each showing:
-//       - Birthday child's name and age
-//       - Session time (10:00 AM or 4:00 PM)
-//       - Group size
-//       - Package (Gold or Platinum) — colour-coded
-//       - Room name (Frost / Glacier / Blizzard)
-//       - Food choice (with emoji for quick visual scan)
-//       - Dessert choice (Platinum only)
-//       - Allergens — highlighted in red if any are present
-//       - Parent contact info (for day-of contact)
-//   - Visual quick-glance: cards stay simple, scannable at a distance
-//
-// PLANNED FEATURES (post-MVP):
-//   - Date filter to view past or future bookings
-//   - Search by child's name or parent's name
-//   - "Mark as completed" toggle for done parties
-//   - Export today's list as PDF for printing
-//   - Allergen alerts at the top of the page
-//
-// PLANNED PROPS:
-//   - bookings: array of all confirmed bookings
-//                (in a real system this would come from a backend;
-//                for MVP this could be hardcoded sample data)
-//   - onExit: returns to wherever the host came from (likely a
-//             separate /host route or hidden navigation)
-//
-// NOTES:
-//   - This view is NOT part of the parent's booking flow. It's
-//     accessed separately (e.g. by adding ?host=true to the URL
-//     in the MVP, or via proper auth in a real system).
-//   - For the MVP demo, sample bookings can be hardcoded to show
-//     what a populated dashboard would look like.
-//
-function HostView({ bookings, onExit }) {
-  // State will live here once the view is built.
-  // Likely state to add:
-  //   - selectedDate: which day's bookings to show
-  //   - filter: by package, by allergens flagged, etc.
-  //   - completedBookings: which ones the host has marked done
-  //
-  // For now this is a placeholder render.
-  const [selectedDate] = useState(new Date().toISOString().split("T")[0]);
+function HostView() {
+  // State to hold all bookings loaded from localStorage
+  const [bookings, setBookings] = useState([]);
+
+  // State to track which booking the user has clicked (for detail view)
+  // Null means no booking is currently selected
+  const [selectedBooking, setSelectedBooking] = useState(null);
+
+  // Load bookings from localStorage once when this view first mounts
+  useEffect(() => {
+    const data = loadAllBookings();
+    setBookings(data);
+  }, []);
 
   return (
     <div className="form-page">
       <div className="form-container">
-        <h2>Host Dashboard — coming soon</h2>
+        <h2>Host Dashboard</h2>
         <p className="form-subtitle">
-          This is the host-facing view of the system. The full dashboard will
-          show today's bookings as scannable cards so staff can prep food,
-          rooms, and equipment in advance.
+          All upcoming bookings — click a card to see full details.
         </p>
 
-        <p>
-          See the file header comment in <code>HostView.js</code> for the full
-          planned implementation.
-        </p>
+        {/* Show the list ONLY when no booking is selected */}
+        {!selectedBooking && (
+          <div>
+            {bookings.map((booking) => (
+              <div
+                key={booking.id}
+                className="booking-card"
+                onClick={() => setSelectedBooking(booking)}
+              >
+                <h3>Child's name: {booking.formData.childName}</h3>
+                <p>Child's age: {booking.formData.childAge}</p>
+                <p>Party date: {booking.formData.partyDate}</p>
+                <p>Session Time: {booking.formData.sessionTime}</p>
+                <p>Package: {booking.formData.package.name}</p>
+                <p>Room: {booking.formData.room.name}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* Placeholder showing today's date — proves the component
-            mounts and useState works. Real version will use this
-            to filter the bookings array. */}
-        <p>
-          <strong>Today's date:</strong> {selectedDate}
-        </p>
+        {/* Show the details ONLY when a booking IS selected */}
+        {selectedBooking && (
+          <div>
+            <button
+              type="button"
+              className="button-secondary"
+              onClick={() => setSelectedBooking(null)}
+            >
+              ← Back to list
+            </button>
 
-        {/* Exit button — host returns to wherever they came from.
-            In the MVP, this might just go back to the LandingPage. */}
-        <div className="form-buttons">
-          <button type="button" className="button-primary" onClick={onExit}>
-            Back to main site
-          </button>
-        </div>
+            <h3>Booking details for {selectedBooking.formData.childName}</h3>
+
+            <p>
+              Child: {selectedBooking.formData.childName}, age{" "}
+              {selectedBooking.formData.childAge}
+            </p>
+            <p>
+              Party date: {selectedBooking.formData.partyDate} at{" "}
+              {selectedBooking.formData.sessionTime}
+            </p>
+            <p>
+              Group size: {selectedBooking.formData.numberOfChildren} children +{" "}
+              {selectedBooking.formData.additionalAdults} adults
+            </p>
+            <p>Package: {selectedBooking.formData.package.name}</p>
+            <p>Room: {selectedBooking.formData.room.name}</p>
+            <p>Food: {selectedBooking.formData.food.label}</p>
+
+            <p>
+              Allergens:{" "}
+              {selectedBooking.formData.allergens.length > 0
+                ? selectedBooking.formData.allergens.join(", ")
+                : "None specified"}
+            </p>
+
+            <h4>Contact details</h4>
+            <p>Parent: {selectedBooking.contactDetails.parentName}</p>
+            <p>Email: {selectedBooking.contactDetails.email}</p>
+            <p>Phone: {selectedBooking.contactDetails.phone}</p>
+
+            <p>
+              Special requests:{" "}
+              {selectedBooking.contactDetails.specialRequests
+                ? selectedBooking.contactDetails.specialRequests
+                : "None"}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
