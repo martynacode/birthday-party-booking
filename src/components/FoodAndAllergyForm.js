@@ -298,12 +298,13 @@ function FoodAndAllergyForm({
             type="button"
             className="button-primary"
             disabled={!selectedFood}
-            onClick={() =>
+            onClick={() => {
+              const chosenFood = foodOptions.find((f) => f.id === selectedFood);
               onContinue({
-                food: selectedFood,
+                food: chosenFood,
                 allergens: selectedAllergens,
-              })
-            }
+              });
+            }}
           >
             Continue →
           </button>

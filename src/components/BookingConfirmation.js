@@ -1,7 +1,8 @@
 // Import React and the useEffect hook.
 // useEffect lets us trigger the confetti when the page loads.
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
+import { saveBooking } from "./bookingStorage";
 
 // ===== BookingConfirmation — Step 6 of the booking flow =====
 //
@@ -28,13 +29,14 @@ import confetti from "canvas-confetti";
 //   - Gloves warning includes a Bjorn quip about only having paws
 //
 function BookingConfirmation({ formData, contactDetails, onNewBooking }) {
-  // Generate a booking reference number
-  const generateBookingRef = () => {
-    const date = new Date();
-    const dateStr = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
-    const random = Math.floor(1000 + Math.random() * 9000);
-    return `SNW-${dateStr}-${random}`;
-  };
+  // State to hold the saved booking (so we can show its ID)
+  const [savedBooking, setSavedBooking] = useState(null);
+
+  // Save the booking to localStorage when confirmation page loads
+  useEffect(() => {
+    const saved = saveBooking(formData, contactDetails);
+    setSavedBooking(saved);
+  }, []);
 
   // Trigger falling snow when the confirmation page loads ❄️
   useEffect(() => {
@@ -70,7 +72,7 @@ function BookingConfirmation({ formData, contactDetails, onNewBooking }) {
     return () => clearInterval(snowInterval);
   }, []);
 
-  const bookingRef = generateBookingRef();
+  const bookingRef = savedBooking?.id || "Generating...";
 
   return (
     <div className="form-page">

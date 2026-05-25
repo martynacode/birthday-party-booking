@@ -14,7 +14,7 @@ import React, { useState } from "react";
 //   - Email address (required, validated)
 //   - Phone number (required)
 //   - Special requests (optional text area)
-//
+// ./
 // Summary shown:
 //   - Party details (child's name, age, date, time, guest count)
 //   - Package choice (Gold or Platinum)
