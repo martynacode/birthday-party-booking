@@ -1,5 +1,7 @@
-/* Colour palette
-   If we want to change a colour later, we change it in one place. */
+/* ============================================================
+   Colour palette
+   Change a colour here and it updates everywhere.
+   ============================================================ */
 :root {
   --deep-blue: #2b32ac;
   --sky-blue: #476ce8;
@@ -7,15 +9,38 @@
   --white: #fefdfd;
   --silver: #cccccc;
   --gold: #ffd700;
+
+  /* Extra tones for depth and warmth (derived from the core palette) */
+  --cream: #fffaf0;
+  --soft-blue-bg: #eef3ff;
+  --gold-soft: #fff4cc;
+  --shadow-blue: rgba(43, 50, 172, 0.18);
+  --shadow-blue-soft: rgba(43, 50, 172, 0.1);
 }
+
+/* Bring in a playful display font for headings + a clean body font.
+   Fredoka is rounded and friendly — perfect for a kids' venue. */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap");
 
 /* ===== WHOLE PAGE BODY ===== */
 body {
   margin: 0;
   font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    "Nunito",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   background-color: var(--white);
   color: var(--deep-blue);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
 }
 
 .App {
@@ -37,52 +62,99 @@ body {
     var(--turquoise) 100%
   );
   color: var(--white);
-  padding: 80px 20px;
+  padding: 90px 20px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* A soft glowing orb behind the hero text for depth */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .hero-image {
   max-width: 500px;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 28px;
   margin-bottom: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  position: relative;
 }
 
 .hero h1 {
-  font-family: "Emilys Candy", cursive;
-  font-size: 6rem;
+  font-family: "Fredoka", "Emilys Candy", cursive;
+  font-size: 5.5rem;
   margin: 0 0 20px 0;
-  font-weight: bold;
+  font-weight: 700;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  position: relative;
 }
 
 .hero p {
   font-size: 1.5rem;
   margin: 0 0 40px 0;
   opacity: 0.95;
+  position: relative;
 }
 
 .book-button {
   background-color: var(--gold);
   color: var(--deep-blue);
-  font-size: 1.3rem;
-  font-weight: bold;
-  padding: 15px 40px;
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 18px 48px;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  transition: transform 0.2s;
+  box-shadow:
+    0 8px 0 #d4af00,
+    0 12px 24px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  position: relative;
 }
 
+/* Bouncy "press down" effect — feels like a real button */
 .book-button:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 0 #d4af00,
+    0 16px 28px rgba(0, 0, 0, 0.25);
+}
+
+.book-button:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 4px 0 #d4af00,
+    0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .features {
-  padding: 60px 20px;
+  padding: 70px 20px;
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+}
+
+.features h2 {
+  font-size: 2.4rem;
+  color: var(--deep-blue);
+  margin-bottom: 30px;
 }
 
 .features ul {
@@ -92,17 +164,23 @@ body {
 }
 
 .features li {
-  background-color: var(--turquoise);
+  background: linear-gradient(135deg, var(--turquoise) 0%, #b8ede1 100%);
   color: var(--deep-blue);
-  padding: 15px 25px;
-  margin: 10px 0;
-  border-radius: 10px;
-  font-weight: 500;
+  padding: 18px 28px;
+  margin: 14px 0;
+  border-radius: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(147, 226, 211, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.features li:hover {
+  transform: scale(1.02);
 }
 
 @media (max-width: 768px) {
   .hero h1 {
-    font-size: 2rem;
+    font-size: 2.6rem;
   }
 
   .hero p {
@@ -116,6 +194,61 @@ body {
   .features li {
     font-size: 1rem;
   }
+}
+
+/* ===== FORM PAGE (shared layout for all form steps) ===== */
+
+.form-page {
+  background: linear-gradient(
+    135deg,
+    var(--deep-blue) 0%,
+    var(--sky-blue) 100%
+  );
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.form-container {
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: var(--white);
+  padding: 44px 38px;
+  /* Big soft corners = friendly + toy-like */
+  border-radius: 28px;
+  /* Gold outer frame */
+  border: 5px solid var(--gold);
+  /* A "frame within a frame" — layered rings build a fancier,
+     matted-picture-frame look without needing an image:
+       1) white gap just inside the gold border
+       2) a thin second gold line inside that
+       3) the floating blue drop shadow underneath
+       4) a soft gold glow ring outside the whole thing */
+  box-shadow:
+    inset 0 0 0 4px var(--white),
+    inset 0 0 0 7px rgba(255, 215, 0, 0.55),
+    0 16px 40px var(--shadow-blue),
+    0 0 0 10px rgba(255, 215, 0, 0.1);
+}
+
+.form-container h2 {
+  color: var(--deep-blue);
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 2rem;
+}
+
+.form-container h3 {
+  color: var(--deep-blue);
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 1.4rem;
+}
+
+.form-subtitle {
+  color: var(--sky-blue);
+  margin-bottom: 24px;
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 /* ===== PACKAGE SELECTOR ===== */
@@ -134,42 +267,46 @@ body {
 }
 
 .package-card {
-  border: 3px solid var(--silver);
-  border-radius: 15px;
-  padding: 25px;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  padding: 28px 25px;
   cursor: pointer;
   transition:
-    transform 0.2s,
-    border-color 0.2s;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   background-color: var(--white);
+  box-shadow: 0 6px 18px var(--shadow-blue-soft);
 }
 
 .package-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  box-shadow: 0 14px 30px var(--shadow-blue);
 }
 
 .package-card-selected {
   border-color: var(--deep-blue);
-  box-shadow: 0 6px 15px rgba(43, 50, 172, 0.2);
+  box-shadow: 0 10px 28px var(--shadow-blue);
 }
 
 .package-gold {
-  background-color: #fff9e0;
+  background: linear-gradient(160deg, #fffbe8 0%, #fff4cc 100%);
 }
 
 .package-platinum {
-  background-color: #e8f0ff;
+  background: linear-gradient(160deg, #f0f5ff 0%, #e0ebff 100%);
 }
 
 .package-card h3 {
   margin: 0 0 10px 0;
-  font-size: 1.8rem;
+  font-size: 2rem;
 }
 
 .package-price {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin: 0 0 15px 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 18px 0;
+  color: var(--deep-blue);
 }
 
 .package-features {
@@ -179,8 +316,8 @@ body {
 }
 
 .package-features li {
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .package-features li:last-child {
@@ -190,35 +327,60 @@ body {
 .package-select-hint {
   text-align: center;
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--deep-blue);
 }
 
-/* ===== CONTINUE BUTTON (shared across single-button forms) ===== */
+/* ===== BUTTONS ===== */
 
-.continue-button {
+/* Shared chunky bouncy button base */
+.continue-button,
+.button-primary {
   background-color: var(--deep-blue);
   color: white;
+  font-family: "Fredoka", sans-serif;
   font-size: 1.1rem;
-  font-weight: bold;
-  padding: 12px 30px;
+  font-weight: 600;
+  padding: 14px 34px;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  transition: transform 0.2s;
+  box-shadow:
+    0 6px 0 #1f2585,
+    0 8px 18px var(--shadow-blue);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.continue-button {
   display: block;
   margin: 30px auto 0 auto;
 }
 
-.continue-button:hover:not(:disabled) {
-  transform: scale(1.03);
+.continue-button:hover:not(:disabled),
+.button-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 0 #1f2585,
+    0 12px 22px var(--shadow-blue);
 }
 
-.continue-button:disabled {
+.continue-button:active:not(:disabled),
+.button-primary:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow:
+    0 3px 0 #1f2585,
+    0 4px 10px var(--shadow-blue);
+}
+
+.continue-button:disabled,
+.button-primary:disabled {
   background-color: var(--silver);
   color: white;
   cursor: not-allowed;
-  opacity: 0.6;
+  box-shadow: none;
+  opacity: 0.7;
 }
 
 /* ===== FORM BUTTONS (Back + Continue side-by-side) ===== */
@@ -230,42 +392,26 @@ body {
   margin-top: 30px;
 }
 
-.button-primary,
-.button-secondary {
-  font-size: 1rem;
-  font-weight: bold;
-  padding: 12px 28px;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.button-primary {
-  background-color: var(--deep-blue);
-  color: white;
-  border: none;
-}
-
-.button-primary:hover:not(:disabled) {
-  transform: scale(1.03);
-}
-
-.button-primary:disabled {
-  background-color: var(--silver);
-  color: white;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
 .button-secondary {
   background-color: transparent;
   color: var(--deep-blue);
-  border: 2px solid var(--deep-blue);
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 14px 32px;
+  border: 3px solid var(--deep-blue);
+  border-radius: 50px;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .button-secondary:hover {
   background-color: var(--deep-blue);
   color: white;
+  transform: translateY(-2px);
 }
 
 /* ===== ROOM CARDS ===== */
@@ -287,11 +433,11 @@ body {
 .room-too-small {
   background-color: #ffe8e8;
   color: #b8000a;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
   margin: 10px 0 0 0;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* ===== FOOD SUMMARY CARD ===== */
@@ -299,10 +445,11 @@ body {
 .food-summary {
   background: linear-gradient(135deg, #f5f7ff 0%, #e8f8f4 100%);
   border: 2px solid var(--turquoise);
-  border-radius: 12px;
-  padding: 20px 24px;
+  border-radius: 18px;
+  padding: 22px 26px;
   margin-top: 30px;
   margin-bottom: 30px;
+  box-shadow: 0 6px 18px rgba(147, 226, 211, 0.25);
 }
 
 .food-summary h3 {
@@ -319,46 +466,7 @@ body {
 
 .food-summary strong {
   color: var(--deep-blue);
-  font-weight: 600;
-}
-
-/* ===== FORM PAGE (shared layout for all form steps) ===== */
-
-.form-page {
-  background: linear-gradient(
-    135deg,
-    var(--deep-blue) 0%,
-    var(--sky-blue) 100%
-  );
-  min-height: 100vh;
-  padding: 30px 20px;
-}
-
-.form-container {
-  max-width: 700px;
-  margin: 0 auto;
-  background-color: var(--white);
-  padding: 40px 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.form-container h2 {
-  color: var(--deep-blue);
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-
-.form-container h3 {
-  color: var(--deep-blue);
-  margin-top: 30px;
-  margin-bottom: 10px;
-}
-
-.form-subtitle {
-  color: var(--sky-blue);
-  margin-bottom: 20px;
-  font-size: 1rem;
+  font-weight: 700;
 }
 
 /* ===== FOOD CARDS ===== */
@@ -372,14 +480,16 @@ body {
 
 .food-card {
   position: relative;
-  border: 2px solid var(--silver);
-  border-radius: 15px;
-  padding: 20px;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  padding: 22px;
   cursor: pointer;
   background-color: var(--white);
+  box-shadow: 0 4px 14px var(--shadow-blue-soft);
   transition:
-    border-color 0.2s,
-    transform 0.2s;
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .food-card,
@@ -389,23 +499,24 @@ body {
 
 .food-card:hover {
   border-color: var(--sky-blue);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px var(--shadow-blue);
 }
 
 .food-card-selected {
   border-color: var(--deep-blue);
-  background-color: #f5f7ff;
-  box-shadow: 0 4px 12px rgba(43, 50, 172, 0.15);
+  background: linear-gradient(160deg, #f5f7ff 0%, #e8efff 100%);
+  box-shadow: 0 8px 22px var(--shadow-blue);
 }
 
 .food-card-emoji {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin-bottom: 10px;
 }
 
 .food-card-label {
   margin: 0 0 5px 0;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--deep-blue);
 }
 
@@ -422,25 +533,25 @@ body {
 }
 
 .allergen-pill {
-  background-color: #fff7d6;
+  background-color: var(--gold-soft);
   color: #8a6d00;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
   border: 1px solid #f5d76e;
 }
 
 .food-card-selected-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 14px;
+  right: 14px;
   background-color: var(--deep-blue);
   color: var(--white);
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* ===== ALLERGENS LIST ===== */
@@ -453,10 +564,15 @@ body {
 }
 
 .allergen-item {
-  border: 1px solid var(--silver);
-  border-radius: 10px;
-  padding: 12px 16px;
+  border: 2px solid #eaeaea;
+  border-radius: 14px;
+  padding: 14px 18px;
   background-color: var(--white);
+  transition: border-color 0.2s ease;
+}
+
+.allergen-item:hover {
+  border-color: var(--turquoise);
 }
 
 .allergen-row {
@@ -465,6 +581,7 @@ body {
   gap: 10px;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 600;
   color: var(--deep-blue);
 }
 
@@ -481,11 +598,11 @@ body {
 }
 
 .allergen-message {
-  margin: 10px 0 0 30px;
-  padding: 10px 14px;
-  background-color: #fff7d6;
-  border-left: 3px solid var(--gold);
-  border-radius: 6px;
+  margin: 12px 0 0 30px;
+  padding: 12px 16px;
+  background-color: var(--gold-soft);
+  border-left: 4px solid var(--gold);
+  border-radius: 10px;
   font-size: 0.9rem;
   color: #5a4a00;
   line-height: 1.4;
@@ -496,10 +613,11 @@ body {
 .hot-chocolate-section {
   background: linear-gradient(135deg, #fff5e0 0%, #ffe8b8 100%);
   border: 2px solid var(--gold);
-  border-radius: 12px;
-  padding: 20px 24px;
+  border-radius: 18px;
+  padding: 22px 26px;
   margin-top: 30px;
   margin-bottom: 30px;
+  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.2);
 }
 
 .hot-chocolate-section h3 {
@@ -525,20 +643,20 @@ body {
 }
 
 .hot-chocolate-toppings li {
-  background-color: rgba(255, 255, 255, 0.6);
-  padding: 6px 12px;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 7px 14px;
   border-radius: 20px;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .hot-chocolate-note {
   font-size: 0.9rem;
   font-style: italic;
   color: #5a4a00;
-  background-color: rgba(255, 255, 255, 0.5);
-  padding: 10px 14px;
-  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 12px 16px;
+  border-radius: 10px;
   margin-top: 12px !important;
 }
 
@@ -554,13 +672,14 @@ body {
   color: var(--deep-blue);
   margin-bottom: 10px;
   text-align: center;
+  font-size: 2rem;
 }
 
 /* Contact Section */
 .contact-section {
-  background-color: #f9f9f9;
-  padding: 30px;
-  border-radius: 12px;
+  background-color: var(--soft-blue-bg);
+  padding: 32px;
+  border-radius: 18px;
   margin-bottom: 30px;
 }
 
@@ -576,31 +695,45 @@ body {
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .form-group label {
   display: block;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 8px;
   color: var(--deep-blue);
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
-  padding: 12px;
-  border: 2px solid var(--silver);
-  border-radius: 8px;
+  padding: 14px 16px;
+  /* Bolder warm-yellow fill so each input clearly reads as a
+     distinct box, and breaks up all the blue with warmth. */
+  background-color: var(--gold-soft);
+  border: 2px solid #f0d97a;
+  border-radius: 14px;
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.3s ease;
+  color: var(--deep-blue);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+  box-sizing: border-box;
 }
 
+/* When focused, the box brightens to white and glows gold —
+   clear "you're typing here now" feedback. */
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   outline: none;
-  border-color: var(--sky-blue);
+  background-color: var(--white);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3);
 }
 
 .form-group input.error,
@@ -612,22 +745,31 @@ body {
   display: block;
   color: #d32f2f;
   font-size: 0.85rem;
-  margin-top: 5px;
+  margin-top: 6px;
+  font-weight: 600;
 }
 
 .helper-text {
   display: block;
-  color: #888;
-  font-size: 0.85rem;
-  margin-top: 5px;
-  font-style: italic;
+  color: #6a6a6a;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.info-message {
+  display: block;
+  color: var(--sky-blue);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  font-weight: 600;
 }
 
 /* Summary Section */
 .summary-section {
-  background-color: #f0f7ff;
-  padding: 30px;
-  border-radius: 12px;
+  background-color: var(--soft-blue-bg);
+  padding: 32px;
+  border-radius: 18px;
   margin-bottom: 30px;
 }
 
@@ -645,22 +787,23 @@ body {
 
 .summary-card {
   background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  border-left: 4px solid var(--gold);
+  padding: 22px;
+  border-radius: 14px;
+  border-left: 5px solid var(--gold);
+  box-shadow: 0 4px 12px var(--shadow-blue-soft);
 }
 
 .summary-card h4 {
   color: var(--deep-blue);
   margin-bottom: 15px;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 9px 0;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .summary-row:last-child {
@@ -668,7 +811,7 @@ body {
 }
 
 .summary-label {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--deep-blue);
 }
 
@@ -679,15 +822,14 @@ body {
 
 .summary-note {
   margin-top: 20px;
-  padding: 15px;
+  padding: 16px;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 12px;
   color: #666;
   font-size: 0.9rem;
   text-align: center;
 }
 
-/* Responsive Design for Summary Grid */
 @media (min-width: 768px) {
   .summary-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -698,37 +840,40 @@ body {
 
 .confirmation-hero {
   text-align: center;
-  padding: 30px 20px;
+  padding: 38px 24px;
   background: linear-gradient(135deg, #fff9e0 0%, #ffe8b8 100%);
-  border-radius: 15px;
+  border-radius: 24px;
   margin-bottom: 30px;
-  border: 2px solid var(--gold);
+  border: 3px solid var(--gold);
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.25);
 }
 
 .confirmation-hero h2 {
   color: var(--deep-blue);
-  font-size: 2rem;
+  font-size: 2.4rem;
   margin: 0 0 15px 0;
 }
 
 .confirmation-message {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--deep-blue);
-  margin: 0 0 20px 0;
+  margin: 0 0 22px 0;
+  font-weight: 600;
 }
 
 .booking-ref {
   display: inline-block;
   background-color: var(--white);
-  padding: 12px 24px;
+  padding: 14px 28px;
   border-radius: 50px;
   border: 2px solid var(--deep-blue);
+  box-shadow: 0 4px 12px var(--shadow-blue-soft);
 }
 
 .booking-ref-label {
   color: var(--deep-blue);
   margin-right: 10px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .booking-ref-number {
@@ -743,16 +888,17 @@ body {
 .gloves-warning {
   background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
   border: 2px solid #f0ad4e;
-  border-radius: 12px;
-  padding: 20px 24px;
+  border-radius: 18px;
+  padding: 22px 26px;
   margin-bottom: 30px;
   display: flex;
   gap: 16px;
   align-items: flex-start;
+  box-shadow: 0 6px 18px rgba(240, 173, 78, 0.25);
 }
 
 .gloves-warning-icon {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   flex-shrink: 0;
 }
 
@@ -779,10 +925,10 @@ body {
 .bjorn-aside {
   font-size: 0.95rem;
   color: #7a5a00 !important;
-  padding: 10px 14px;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 8px;
-  border-left: 3px solid #f0ad4e;
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  border-left: 4px solid #f0ad4e;
 }
 
 /* ===== NEXT STEPS ===== */
@@ -790,9 +936,10 @@ body {
 .next-steps {
   background: linear-gradient(135deg, #f5f7ff 0%, #e8f8f4 100%);
   border: 2px solid var(--turquoise);
-  border-radius: 12px;
-  padding: 20px 24px;
+  border-radius: 18px;
+  padding: 22px 26px;
   margin-bottom: 30px;
+  box-shadow: 0 6px 18px rgba(147, 226, 211, 0.25);
 }
 
 .next-steps h3 {
@@ -808,6 +955,100 @@ body {
 .next-steps li {
   margin-bottom: 12px;
   line-height: 1.6;
+}
+
+/* ===== NUMBER STEPPER ===== */
+
+.stepper {
+  margin-top: 8px;
+}
+
+.stepper-label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--deep-blue);
+}
+
+.stepper-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.stepper-button {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--deep-blue);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 0 #1f2585;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.stepper-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #1f2585;
+}
+
+.stepper-button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #1f2585;
+}
+
+.stepper-button:disabled {
+  background-color: var(--silver);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.stepper-value {
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--deep-blue);
+  min-width: 40px;
+  text-align: center;
+}
+
+/* ===== BOOKING CARDS (Host dashboard) ===== */
+
+.booking-card {
+  background-color: var(--white);
+  border-radius: 18px;
+  padding: 22px 26px;
+  margin-bottom: 18px;
+  cursor: pointer;
+  border-left: 6px solid var(--gold);
+  box-shadow: 0 6px 18px var(--shadow-blue-soft);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.booking-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px var(--shadow-blue);
+}
+
+.booking-card h3 {
+  margin: 0 0 10px 0;
+  color: var(--deep-blue);
+  font-size: 1.4rem;
+}
+
+.booking-card p {
+  margin: 4px 0;
+  color: #555;
 }
 
 /* ===== SIDEBAR ===== */
@@ -827,7 +1068,7 @@ body {
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 20px rgba(43, 50, 172, 0.25);
   z-index: 100;
 }
 
@@ -845,7 +1086,8 @@ body {
 
 .sidebar-brand {
   margin: 0;
-  font-size: 1.1rem;
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--white);
 }
@@ -860,9 +1102,10 @@ body {
 .sidebar-button {
   background-color: transparent;
   color: var(--white);
+  font-family: "Fredoka", sans-serif;
   border: 2px solid rgba(255, 255, 255, 0.3);
   padding: 14px 18px;
-  border-radius: 10px;
+  border-radius: 14px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -871,8 +1114,9 @@ body {
 }
 
 .sidebar-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.12);
   border-color: var(--white);
+  transform: translateX(3px);
 }
 
 .sidebar-button-active {
@@ -885,6 +1129,7 @@ body {
 .sidebar-button-active:hover {
   background-color: var(--white);
   color: var(--deep-blue);
+  transform: translateX(3px);
 }
 
 .sidebar-footer {
@@ -907,7 +1152,7 @@ body {
   margin-left: 220px; /* Match sidebar width */
 }
 
-/* Mobile responsive */
+/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
   .App {
     flex-direction: column;
