@@ -1,7 +1,8 @@
 // Import React and the useState hook from the react library.
-// We use useState several times — one piece of state per form field,
+// We use useState twice — one object for all form fields,
 // plus a single object that tracks any validation errors.
 import React, { useState } from "react";
+import NumberStepper from "./NumberStepper";
 
 // ===== PartyDetailsForm — Step 1 of the booking flow =====
 //
@@ -16,20 +17,25 @@ import React, { useState } from "react";
 //   - onContinue: called with the form data when Continue is clicked
 //
 // Validation strategy:
-//   - clearError: wipes a single field's error on change
-//   - validateField: runs on blur for inline feedback
-//   - validateForm: safety net that re-checks everything on submit
+//   - The typed fields (name, age, date) are validated on blur for
+//     inline feedback, and re-checked on submit as a safety net.
+//   - The number fields (children, adults) use NumberStepper, which
+//     enforces its own min/max — so they need no validation at all.
 //
 function PartyDetailsForm({ onContinue }) {
-  // === STATE: one piece per field ===
-  // Empty strings/zero defaults so inputs start clean.
-  // numberOfChildren defaults to 8 (our minimum group size).
-  const [childName, setChildName] = useState("");
-  const [childAge, setChildAge] = useState("");
-  const [partyDate, setPartyDate] = useState("");
-  const [sessionTime, setSessionTime] = useState("10:00");
-  const [numberOfChildren, setNumberOfChildren] = useState(8);
-  const [additionalAdults, setAdditionalAdults] = useState(0);
+  // === STATE: all form fields grouped into one object ===
+  // Grouping makes it easy to add a new field — change it in one place.
+  // childName, childAge, partyDate and sessionTime are strings.
+  // numberOfChildren and additionalAdults are real numbers, because
+  // the NumberStepper does +/- maths on them directly.
+  const [details, setDetails] = useState({
+    childName: "",
+    childAge: "",
+    partyDate: "",
+    sessionTime: "12:00",
+    numberOfChildren: 8,
+    additionalAdults: 0,
+  });
 
   // === STATE: validation errors keyed by field name ===
   // e.g. { childName: "Please enter a name", childAge: undefined }
@@ -41,16 +47,22 @@ function PartyDetailsForm({ onContinue }) {
   // against in validation.
   const today = new Date().toISOString().split("T")[0];
 
-  // === HELPER: clear one field's error on change ===
-  // Called when the user starts typing again — wipes the error
-  // for that field so they're not nagged while still editing.
-  function clearError(field) {
-    setErrors({ ...errors, [field]: undefined });
+  // === HELPER: update one field and clear its error ===
+  // One handler used by the typed inputs. Pulls the field name from the
+  // input's name attribute, updates that field in the details object,
+  // and clears any existing error on it.
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setDetails((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
   }
 
   // === HELPER: validate a single field (called on blur) ===
   // Sets an error message for the given field if invalid.
-  // Returns nothing — directly updates the errors state.
+  // Only the typed fields are validated here — the stepper fields
+  // can't produce invalid values, so they're not included.
   function validateField(field, value) {
     let error;
 
@@ -71,30 +83,19 @@ function PartyDetailsForm({ onContinue }) {
         else if (value <= today) error = "Party date must be in the future";
         break;
 
-      case "numberOfChildren":
-        if (Number(value) < 8)
-          error = "Sorry, our parties are for groups of 8 or more!";
-        else if (Number(value) > 24)
-          error =
-            "Sorry, our biggest room only fits 24 children — try a smaller group?";
-        break;
-
-      case "additionalAdults":
-        if (Number(value) < 0) error = "Please use a positive number";
-        break;
-
       default:
         break;
     }
 
-    setErrors({ ...errors, [field]: error });
+    setErrors((prev) => ({ ...prev, [field]: error }));
   }
 
   // === HELPER: validate everything on submit (safety net) ===
-  // Runs all field validations and returns the full errors object.
-  // Used by handleSubmit to block submission if anything is invalid.
+  // Re-checks the typed fields and returns the full errors object.
+  // The stepper fields are omitted — they're always valid by design.
   function validateForm() {
     const newErrors = {};
+    const { childName, childAge, partyDate } = details;
 
     if (!childName.trim())
       newErrors.childName = "Please tell us the birthday child's name";
@@ -107,22 +108,15 @@ function PartyDetailsForm({ onContinue }) {
     else if (partyDate <= today)
       newErrors.partyDate = "Party date must be in the future";
 
-    if (Number(numberOfChildren) < 8)
-      newErrors.numberOfChildren =
-        "Sorry, our parties are for groups of 8 or more!";
-    else if (Number(numberOfChildren) > 24)
-      newErrors.numberOfChildren =
-        "Sorry, our biggest room only fits 24 children — try a smaller group?";
-
-    if (Number(additionalAdults) < 0)
-      newErrors.additionalAdults = "Please use a positive number";
-
     return newErrors;
   }
 
   // === HANDLE SUBMIT ===
   // Runs the safety-net validator. If anything's invalid, show all
   // errors and bail. Otherwise, send the data up to App.js.
+  // numberOfChildren and additionalAdults are already numbers, so
+  // they're passed straight through; childAge is converted from its
+  // string input here.
   function handleSubmit() {
     const foundErrors = validateForm();
 
@@ -132,12 +126,12 @@ function PartyDetailsForm({ onContinue }) {
     }
 
     onContinue({
-      childName,
-      childAge,
-      partyDate,
-      sessionTime,
-      numberOfChildren,
-      additionalAdults,
+      childName: details.childName,
+      childAge: Number(details.childAge),
+      partyDate: details.partyDate,
+      sessionTime: details.sessionTime,
+      numberOfChildren: details.numberOfChildren,
+      additionalAdults: details.additionalAdults || 0,
     });
   }
 
@@ -154,11 +148,9 @@ function PartyDetailsForm({ onContinue }) {
           <input
             type="text"
             id="childName"
-            value={childName}
-            onChange={(e) => {
-              setChildName(e.target.value);
-              clearError("childName");
-            }}
+            name="childName"
+            value={details.childName}
+            onChange={handleChange}
             onBlur={(e) => validateField("childName", e.target.value)}
             placeholder="e.g. Emily"
           />
@@ -173,11 +165,9 @@ function PartyDetailsForm({ onContinue }) {
           <input
             type="number"
             id="childAge"
-            value={childAge}
-            onChange={(e) => {
-              setChildAge(e.target.value);
-              clearError("childAge");
-            }}
+            name="childAge"
+            value={details.childAge}
+            onChange={handleChange}
             onBlur={(e) => validateField("childAge", e.target.value)}
             placeholder="e.g. 8"
           />
@@ -186,7 +176,7 @@ function PartyDetailsForm({ onContinue }) {
           )}
 
           {/* Info message for older children — not an error, just guidance */}
-          {Number(childAge) >= 14 && (
+          {Number(details.childAge) >= 14 && (
             <p className="info-message">
               Our parties are designed for ages 4-13, but you're welcome to book
               for older children too!
@@ -200,11 +190,9 @@ function PartyDetailsForm({ onContinue }) {
           <input
             type="date"
             id="partyDate"
-            value={partyDate}
-            onChange={(e) => {
-              setPartyDate(e.target.value);
-              clearError("partyDate");
-            }}
+            name="partyDate"
+            value={details.partyDate}
+            onChange={handleChange}
             onBlur={(e) => validateField("partyDate", e.target.value)}
             min={today}
           />
@@ -218,51 +206,71 @@ function PartyDetailsForm({ onContinue }) {
           <label htmlFor="sessionTime">Session time</label>
           <select
             id="sessionTime"
-            value={sessionTime}
-            onChange={(e) => setSessionTime(e.target.value)}
+            name="sessionTime"
+            value={details.sessionTime}
+            onChange={handleChange}
           >
             <option value="12:00">12:00 PM</option>
             <option value="17:00">5:00 PM</option>
           </select>
         </div>
 
-        {/* Number of children — 8 to 24 range enforced in validation */}
+        {/* Number of children — stepper enforces the 8 to 24 range */}
         <div className="form-group">
-          <label htmlFor="numberOfChildren">Number of children</label>
-          <input
-            type="number"
-            id="numberOfChildren"
-            value={numberOfChildren}
-            onChange={(e) => {
-              setNumberOfChildren(parseInt(e.target.value));
-              clearError("numberOfChildren");
-            }}
-            onBlur={(e) => validateField("numberOfChildren", e.target.value)}
+          <NumberStepper
+            label="Number of children"
+            value={details.numberOfChildren}
+            onChange={(newValue) =>
+              setDetails((prev) => ({ ...prev, numberOfChildren: newValue }))
+            }
+            min={8}
+            max={24}
           />
-          {errors.numberOfChildren && (
-            <p className="error-message">{errors.numberOfChildren}</p>
-          )}
         </div>
 
-        {/* Additional adults — 2 included by default, extras are optional */}
+        {/* Extra adults — the section separates three distinct ideas:
+            the rule (2 included, must be present), the invitation
+            (more are welcome), and the recommendation (more for young
+            kids). The stepper itself caps the extra adults at 10. */}
         <div className="form-group">
-          <label htmlFor="additionalAdults">
-            Additional adults (2 included in package)
-          </label>
-          <input
-            type="number"
-            id="additionalAdults"
-            value={additionalAdults}
-            onChange={(e) => {
-              setAdditionalAdults(parseInt(e.target.value));
-              clearError("additionalAdults");
-            }}
-            onBlur={(e) => validateField("additionalAdults", e.target.value)}
-            placeholder="0"
+          <label>Extra adults</label>
+
+          {/* The rule — stated plainly first */}
+          <p className="helper-text">
+            Two adults are included with every booking and must stay with the
+            party on the slope at all times — the children are your
+            responsibility, not ours!
+          </p>
+
+          {/* The invitation */}
+          <p className="helper-text">
+            You're very welcome to bring more. How many extra would you like to
+            add?
+          </p>
+
+          {/* The recommendation — softer, separate */}
+          <p className="helper-text">
+            For younger crews (ages 4–6) we'd recommend roughly 1 adult per 4
+            children — small humans move fast! For older groups, the included
+            two are usually plenty.
+          </p>
+
+          <p className="bjorn-aside">
+            <em>
+              "I can wrangle them on the slope, but I can't be everywhere —
+              extra hands are always welcome!" 🐻
+            </em>
+          </p>
+
+          <NumberStepper
+            label="Extra adults"
+            value={details.additionalAdults}
+            onChange={(newValue) =>
+              setDetails((prev) => ({ ...prev, additionalAdults: newValue }))
+            }
+            min={0}
+            max={10}
           />
-          {errors.additionalAdults && (
-            <p className="error-message">{errors.additionalAdults}</p>
-          )}
         </div>
 
         {/* Continue button — runs the safety-net validator on click.

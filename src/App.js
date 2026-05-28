@@ -26,7 +26,7 @@ import "./App.css";
 // decides what to render next.
 //
 // Step order:
-//   landing → details → package → room → food → booking
+//   landing → details → package → room → food → booking → confirmation
 //
 function App() {
   // === STATE ===
@@ -46,6 +46,14 @@ function App() {
     window.scrollTo(0, 0);
   }, [step]);
 
+  // === HELPER: merge new fields into bookingData ===
+  // Uses the functional form of setBookingData so we always merge into
+  // the *latest* state, not a stale snapshot from when the handler was
+  // created. This is the safe pattern any time new state depends on old.
+  function mergeBookingData(newFields) {
+    setBookingData((prev) => ({ ...prev, ...newFields }));
+  }
+
   // === HANDLERS ===
   // Each form has its own continue handler that merges new data into
   // bookingData and advances to the next step. handleBack is shared —
@@ -53,25 +61,25 @@ function App() {
 
   // Called when PartyDetailsForm finishes
   function handleDetailsContinue(partyDetails) {
-    setBookingData({ ...bookingData, ...partyDetails });
+    mergeBookingData(partyDetails);
     setStep("package");
   }
 
   // Called when PackageSelector finishes
   function handlePackageContinue(packageChoice) {
-    setBookingData({ ...bookingData, ...packageChoice });
+    mergeBookingData(packageChoice);
     setStep("room");
   }
 
   // Called when RoomSelector finishes
   function handleRoomContinue(roomChoice) {
-    setBookingData({ ...bookingData, ...roomChoice });
+    mergeBookingData(roomChoice);
     setStep("food");
   }
 
   // Called when FoodAndAllergyForm finishes
   function handleFoodContinue(foodData) {
-    setBookingData({ ...bookingData, ...foodData });
+    mergeBookingData(foodData);
     setStep("booking");
   }
 
