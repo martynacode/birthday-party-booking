@@ -15,3 +15,6 @@ I value iterative improvements when they sharpen something already in scope - sm
 
 **Initial implementation**
 Initial implementation allows unlimited additional adults and date selection up to several years in advance. Real-world usage testing identified these as edge-case issues: a 25-adult party isn't operationally feasible, and bookings 5 years out exceed reasonable forecast windows. Future iterations would add: a soft cap on additional adults (e.g. max 25, with warning at 15+), and a max booking window of 6 months ahead with friendly messaging about future openings.
+
+**Booking calendar**
+Bookings are sorted earliest-first with past events hidden. A future enhancement would add a 'relevance window' — defaulting the host view to bookings within the next 30 days, since a venue rarely needs to prepare for a party 11 months away. Parents can book up to a year ahead, but hosts only need near-term bookings surfaced by default, with an option to view all.

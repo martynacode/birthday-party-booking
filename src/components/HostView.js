@@ -23,11 +23,29 @@ function HostView() {
   // State to track which booking the user has clicked (for detail view)
   // Null means no booking is currently selected
   const [selectedBooking, setSelectedBooking] = useState(null);
+  // Load bookings from localStorage once when this view first mounts.
+  // Filter out past parties (hosts only care about upcoming ones),
+  // then sort earliest-first so the soonest party is at the top.
 
-  // Load bookings from localStorage once when this view first mounts
   useEffect(() => {
     const data = loadAllBookings();
-    setBookings(data);
+
+    // Today's date, same YYYY-MM-DD format as the stored partyDate
+    const today = new Date().toISOString().split("T")[0];
+
+    // Keep only bookings whose party date is today or later
+    const upcoming = data.filter(
+      (booking) => booking.formData.partyDate >= today,
+    );
+
+    // Sort the upcoming bookings earliest-first
+    const sorted = upcoming.sort((a, b) => {
+      const aDateTime = `${a.formData.partyDate} ${a.formData.sessionTime}`;
+      const bDateTime = `${b.formData.partyDate} ${b.formData.sessionTime}`;
+      return aDateTime.localeCompare(bDateTime);
+    });
+
+    setBookings(sorted);
   }, []);
 
   return (
@@ -41,6 +59,14 @@ function HostView() {
         {/* Show the list ONLY when no booking is selected */}
         {!selectedBooking && (
           <div>
+            {/* Empty state — only shows when there are no bookings */}
+            {bookings.length === 0 && (
+              <p>
+                No bookings yet! New parties will appear here once booked. 🐻
+              </p>
+            )}
+
+            {/* The list of booking cards */}
             {bookings.map((booking) => (
               <div
                 key={booking.id}
