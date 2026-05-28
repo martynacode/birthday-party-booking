@@ -47,6 +47,13 @@ function PartyDetailsForm({ onContinue }) {
   // against in validation.
   const today = new Date().toISOString().split("T")[0];
 
+  // === Furthest bookable date: 12 months from today ===
+  // We don't take bookings more than a year ahead — too many unknowns
+  // (pricing, staffing) that far out.
+  const maxDateObj = new Date();
+  maxDateObj.setMonth(maxDateObj.getMonth() + 12);
+  const maxDate = maxDateObj.toISOString().split("T")[0];
+
   // === HELPER: update one field and clear its error ===
   // One handler used by the typed inputs. Pulls the field name from the
   // input's name attribute, updates that field in the details object,
@@ -81,8 +88,10 @@ function PartyDetailsForm({ onContinue }) {
         if (!value) error = "Please pick a party date";
         // Same-day bookings are not allowed — date must be strictly in the future.
         else if (value <= today) error = "Party date must be in the future";
+        else if (value > maxDate)
+          error =
+            "We only take bookings up to a year ahead — more dates open soon!";
         break;
-
       default:
         break;
     }
@@ -107,7 +116,9 @@ function PartyDetailsForm({ onContinue }) {
     if (!partyDate) newErrors.partyDate = "Please pick a party date";
     else if (partyDate <= today)
       newErrors.partyDate = "Party date must be in the future";
-
+    else if (partyDate > maxDate)
+      newErrors.partyDate =
+        "We only take bookings up to a year ahead — more dates open soon!";
     return newErrors;
   }
 
@@ -195,6 +206,7 @@ function PartyDetailsForm({ onContinue }) {
             onChange={handleChange}
             onBlur={(e) => validateField("partyDate", e.target.value)}
             min={today}
+            max={maxDate}
           />
           {errors.partyDate && (
             <p className="error-message">{errors.partyDate}</p>
